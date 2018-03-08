@@ -1,0 +1,61 @@
+% !TeX spellcheck = en_US
+\documentclass[11pt,a4paper,twoside,openright]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}  % Required for insertion of code
+\usepackage{graphicx} % Required to insert images
+\usepackage{textcomp}
+\usepackage{enumerate} % Required for enumerate model
+\usepackage{gensymb} %Required for degree symbol which is made ^{\circ}
+\usepackage{caption} %used to have cool captions
+\captionsetup{
+	tableposition=top,
+	figureposition=bottom,
+	font=small,
+	format=hang, 
+	labelfont=bf}	%caption setup
+\usepackage[protrusion=allmath]{microtype} %used to have high quality text formatting
+\usepackage{graphicx,subfig,float,wrapfig,rotating,multirow,epstopdf} %high quality tables and images formatting
+\usepackage{booktabs,siunitx,array,tabularx} % tables
+\usepackage{amsbsy,bm,amsmath} % math
+
+%\usepackage [ Lenny ]{fncychap}
+\usepackage{longtable} % Required to put long tables
+
+\lstset{ % Frame for Matlab code
+	numbers=left, 
+	numberstyle=\small, 
+	numbersep=8pt, 
+	frame = single, 
+	language=Matlab, 
+	framexleftmargin=19pt,
+	breaklines}
+
+\pagestyle{plain}
+
+\graphicspath{{img/}} % Set graphics directory
+
+\def\permille{\ensuremath{{}^\text{o}\mkern-5mu/\mkern-3mu_\text{oo}}} % Add symbol of per mille
+\newcommand{\parallelsum}{\mathbin{\!/\mkern-5mu/\!}} % Fix parallel symbol inclination
+
+%\makeindex
+
+\title{	Analog Integrated Circuits \\
+	\huge {\textsc{Titolo serio}}	}
+
+\begin{document}
+\author{Roberto Rr\\ chopper19\\
+}
+\date{January 18, 2018}
+\maketitle 		
+\tableofcontents
+
+\input{./TeX_files/prova}
+
+
+\end{document}
