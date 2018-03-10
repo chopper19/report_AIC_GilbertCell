@@ -1,2 +1,77 @@
+% nel mixer bisogna aggiungere x(t), y(t) in ingresso e z(t) in uscita e aggiungere freccia
+
+\begin{circuitikz} 
+	\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+	\draw
+	(0,0) node[mixer] (m) {}
+	(m.1) to[short,-] ++(-.5,0)
+	(m.2) to[short,-] ++(0,-.5)
+	(m.3) to[short,-] ++(.5,0)
+	(m.1) node[inputarrow] {} 
+	(m.2) node[inputarrow,rotate=90] {};
+\end{circuitikz}
+
+
 \section{Introduction}
 
+An analog multiplier, also known as mixer, is a circuit that performs the product between two signals. As we will see, this feature can be exploited to convert informations from a certain frequency band to another by means of the intrinsic non-linear behaviour of this net. Supposing to have two sinusoidal signals and to 
+\begin{align}
+x_1(t) &= A_1 \cos(\omega_1 t + \varphi_1) \notag \\
+x_2(t) &= A_2 \cos(\omega_2 t + \varphi_2) \notag
+\end{align}
+and the ideal mixer shown in figure %metti reference
+one has that the out coming signal $z(t)$ is given by:
+\begin{align}
+y(t)& =x_1(t)\cdot x_2(t)   \notag \\
+& = A_1 A_2 \cos(\omega_1 t + \varphi_1) \cos(\omega_2 t + \varphi_2) \notag \\
+& = \frac{A_1 A_2}{2} \{\cos[(\omega_1-\omega_2) t + \varphi_1-\varphi_2]+ \cos[(\omega_1+\omega_2) t +\varphi_1+ \varphi_2]\} \notag \\
+& = A \cos(\omega_{LF} t + \varphi_{LF}) + A \cos(\omega_{HF} t + \varphi_{HF}) \notag
+\end{align}
+where
+\begin{align}
+\omega_{LF}&= |\omega_1-\omega_2| \notag \\
+\omega_{HF}&= |\omega_1+\omega_2| \notag \\
+\varphi_{LF} &= \varphi_1-\varphi_2 \notag \\
+\varphi_{HF} &= \varphi_1+\varphi_2 \notag 
+\end{align}
+Therefore, it comes that two signals with different frequency allocations are obtained at the output port: the former at $\omega_{LF}<\omega_1,\omega_2$ will be the down-converted component whereas the latter with $\omega_{HF}>\omega_1,\omega_2$ will be the up-converted one.  Moreover, it is possible to select only one of these two signals by properly filtering out the unwanted part.
+Overall one can read the process as a modulation of an input signal by means of a carrier.  Since the mixer is a bidirectional three-port, one can distinguish: 
+\begin{itemize}
+	\item The high frequency signal, RF. In case of down-conversion this is one input of the circuit, vice-versa it is the output (after filtering).
+	\item The intermediate frequency signal, IF. In case of up-conversion this is one input of the circuit, vice-versa it is the output (after filtering).
+	\item The local oscillator, LO. This is the carrier and it is always an input with known frequency.
+\end{itemize}
+
+Based on the above, it turns out that to mix-up two signals a non-linear device is needed, since the input components are at different frequency with respect to the output and a non-linear relation between voltages and currents appears. In general, mixing can be carried out by time-varying systems that can be implemented using:
+\begin{description}
+	\item [passive devices]	typically switches (diodes and transistors). In this case the mixing process introduces a \emph{loss} since the output power is always less than the input one.
+	\item [active devices] amplifying devices are used in active region providing then possibility of \emph{gain}.\footnote{The definition of the gain and loss in mixer will be presented further.} They are more power consuming and less noisy than passive mixers.
+\end{description}
+
+Another way to classify mixers is the following:
+\begin{description}
+	\item [Single balanced mixers] One or both input signals can pass to output, but it is not possible to suppress both of them,
+	\item [Double balanced mixers] Thanks to symmetry in the net both the input and the LO are rejected from the output port. They have show better isolation between ports than SBM. 
+\end{description}
+To understand why a transistors can be used, let's consider the non-linear quadratic model for a nMOSFET, supposing to drive that by injecting a two tone signal $v_{GS}(t)=v_{RF}(t)+v_{LO}(t)$ in the gate (down-conversion configuration). One has:
+\begin{align}
+i_D(t) &= k(v_{GS}(t)-V_{th})^2 \notag \\
+& = k(v_{RF}(t)+v_{LO}(t)-V_{th})^2 \notag \\
+& = k[v_{RF}^2(t)+v_{LO}^2(t)+2v_{RF}(t)v_{LO}(t)-2(v_{RF}(t)+v_{LO}(t))V_{th}+V_{th}^2)] \notag
+\end{align}
+Supposing now $v_{RF}<<v_{LO}$:
+\begin{align}
+i_D(t) &\simeq k(v_{LO}(t)-V_{th})^2+2k(v_{LO}(t)-V_{th})v_{RF}(t) \notag  \\
+& = I_D(t)+g_m(t)v_{RF}(t) \notag
+\end{align}
+hence, the model becomes a \emph{quasi-linear} time-varying \emph{small signal model} and the device operates in the \emph{Small Signal Large Signal} regime (SSLS), because we still have the product of the two input signals through the transconductance. It is worth it to notice that depending on the amplitude of the RF (the LO is always driven in large signal), mixing can be obtained both in linear region or through second order non-linearity (fully non-linear device).
+A more detailed analysis about how to drive a mixer follows in section 2.
+
+Similarly to linear circuits, even in case of mixers it is possible to define the gain. Actually, gain is defined only in case of linear systems, but this figure of merit is necessary to qualify the performance of the conversion stage.
+In case of non-monochromatic signals one defines the \emph{voltage conversion gain} as:
+\begin{equation}
+	A_v= \frac{V_{IF,rms}}{V_{RF,rms}} \notag
+\end{equation}
+moreover, one has that the output power is proportional to LO power (that is also called a \emph{pump}).
+
+\textbf{DA FINIRE CON FIGURE DI MERITO}
