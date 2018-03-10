@@ -1,2 +1,142 @@
-\section{Analysis of a Gilbert Cell }
+\section{Analysis of a Gilbert cell-based analog multiplier }
+
+\subsection{Gilbert cell overview}
+A CMOS-based technology Gilbert cell-based mixer is shown in figure \textbf{AGGIUNGI IMMAGINE}. This circuit exploits a differential topology to implement a double-balanced cell providing:
+\begin{itemize}
+	\item Reasonable conversion gain (from one to some tens);
+	\item Thanks to the double-balanced topology if performs good rejection of input frequency components to the output port along with high linearity;\footnote{The linearity is meant with respect to the conversion gain.}
+	\item Good isolation between ports is provided by the high suppression of spurious frequency components;
+	\item Thanks to the CMOS architecture it can be integrated.
+\end{itemize}
+\subsection{Gilbert cell circuit analysis}
+To analyse the circuit it is necessary to give some informations about its topology, polarization and driving. Looking a FIGURA DOVE C'E' MIXER COMPLETO it is possible to identify five main blocks that are described in what follows.
+\paragraph{Bias net}
+
+This net is made up of the current mirror (transistors M1 and M2) and the voltage reference generation branch (transistor M5, R1, R2, R3, R4, R5). 
+
+Transistor M1 is the strong branch of the current mirror and it acts as a current sink for the differential pair made up by M3 and M4, fixing the polarization current for the whole circuit. M2 sinks instead the current from the voltage reference section of the bias net.
+Generally transistors in current mirrors are polarized in saturation region, so that an high output resistance is seen from the stage above: this means that M1 should appear as a good current sink.
+Given $V_{G1}=V_{GS1}$ the gate voltage in M1 we have that the transistor remains in saturation if:
+\begin{gather}
+\label{eq:sat_m1}
+V_{GS}\geq V_{th}  \\
+V_{DS}>V_{od} = V_{GS}-V_{th} 
+\end{gather}
+The same holds for M2, that is always in saturation condition since it is diode connected (provided \ref{eq:sat_m1}). In saturation (neglecting channel modulation effects), one has that the drain current only depends on gate voltage and it is given by:
+\begin{equation}
+\label{eq:Id_quadLaw}
+I_D = \mu_{n,eff} \frac{C_{ox}}{2} \frac{W}{L} (V_{GS}-V_{th})^2 = \frac{\beta_{n}}{2}V_{od}^2
+\end{equation}
+hence M1 remains in saturation till when:
+\begin{equation}
+V_{DS1}\geq V_{od1}= V_{th}-\sqrt{\frac{2I_0}{\beta_{n}}}
+\end{equation}
+therefore to have a low value of the overdrive voltage one should have large transistors, i.e. large W.
+The output resistance in instead defined by:
+\begin{equation}
+ r_o = \frac{1}{\lambda I_0} \propto L
+\end{equation}
+where $\lambda$ takes count of the channel modulation. It appears that we need long transistors to have better current sink's properties.
+By looking at FIGURE 2, one has (supposing both M2 and M1 in saturation, and $V_{GS1}=V_{GS2}=V_{DS1}=V_{DS2}$):
+\begin{gather}
+I_0 = \frac{\beta_{n1}}{2}(V_{GS1}-V_{th})^2(1+\lambda_1V_{DS1}) \notag \\
+I_{REF} = \frac{\beta_{n2}}{2}(V_{GS1}-V_{th})^2(1+\lambda_1V_{GS1}) \notag
+\end{gather}
+hence, supposing to have equal transistors:
+\begin{equation}
+\frac{I_0}{I_{REF}} = \frac{W_1/L_1}{W_2/L_2} 
+\end{equation}
+Ideally the current mirroring is only depending on geometrical parameters, this means that a very good matching is required. Even if the two devices are very close to each other within the same chip, it exists the possibility to have a variation in parameters that depend on temperature, i.e. $V_{th}$ and $\mu_{n,eff}$. Supposing to have equal devices with everything constant but:
+\begin{gather}
+K_{n1}=K_n+\Delta K_n \notag \\
+V_{th,1} = V_{th}+\Delta V_{th} \notag
+\end{gather}
+one eventually finds that:
+\begin{equation}
+\frac{I_0}{I_{REF}} \simeq 1 + \frac{\Delta K_n}{K_n}+2\frac{\Delta V_{th}}{V_{od}} \notag
+\end{equation}
+Then, some of the possible mismatch causes are:
+\begin{itemize}
+	\item $k_n$, that can varies a lot in case of wide circuits;
+	\item $V_{od}$ that usually is set low and varies with $V_{th}$, whose small variation can produce large differences in the two currents;
+	\item difference between $V_{DS1}$ and $V_{DS2}$.
+\end{itemize}
+Assuming as maximum variations:
+\begin{gather}
+\frac{\Delta K_n}{K_n} = \pm 5 \% \notag \\
+\frac{\Delta V_{th}}{V_{GS}-V_{th}} = \pm 10 \% \notag
+\end{gather}
+one has:
+\begin{equation}
+\frac{I_0}{I_{REF}} = 1 \pm 15 \% \notag
+\end{equation}
+A cascaded voltage divider is connected as M2's load: 
+\begin{itemize}
+	\item M5 is diode connected and it is used to generate the right gate bias voltage for the gain stage.
+	\item A resistive voltage divider made up of R2 and R4 is used to polarize the mixing stage.
+	\item Resistors R1 and R3 are used to connect the bias net to the gain and mixing stages' gates. They also acts as high impedance for the RF and LO signals coming from outside the circuit and prevents them to enter the bias net.
+	\item Capacitors C1 and C2 shunt possible non-DC disturbances coming from the Gilbert Cell, improving the bias isolation.
+\end{itemize}
+
+Noise issues will not be analysed within this treatise, it should be considered for a more complete design though. As a rule of thumb, narrow gate and low overdrive voltages should used to lower noise contribution.(FONTE) 
+Using a resistive voltage reference can be detrimental in case of voltage supply fluctuation, since a resistive voltage divider cannot reject current variations. However using active devices we would produce much more noise injection within the net though.
+
+\paragraph{Gain stage}
+
+The gain stage (shown in figure 3) is the linear part of the mixer, it must handle without distortion and corruptions the power coming from the RF signal giving some amplification. The topology is suited for a low noise amplifying purpose (FONTE): a differential stage with source degeneration. The stage is made up of two transistors (M3 and M4) in common source configuration directly polarized by M1 and two source degeneration resistances $R_S$.
+
+The RF differential signal modulates the current flowing into each of the two transistors, that has to be polarized in saturation region. For both of them it must be ensured an high output voltage range and a quite low overdrive voltage, along with a large drain to source bias voltage (required to maintain the stage in saturation during the swing of the LO stage).
+
+To have an idea on the gain that can be obtained by this stage, one can look at the stage in FIGURE 3. Removing the degeneration resistances one has that the gate-to-gate mesh gives:
+\begin{equation}
+V_{in,1}-V_{in,2} = V_{GS3}-V_{GS4} \notag
+\end{equation} 
+from equation \ref{eq:Id_quadLaw}, recalling that $I_{1}+I_{2}=I_0$ and squaring:
+\begin{equation}
+(V_{in,1}-V_{in,2})^2 = \frac{2}{\beta_n}(I_0-2\sqrt{I_1 I_2}) \notag
+\end{equation}
+that once inverted yields
+\begin{equation}
+I_{1}-I_{2} = \sqrt{\beta_n I_0}(V_{in,1}-V_{in,2})\sqrt{1-\frac{\beta_n}{4I_0}(V_{in,1}-V_{in,2})^2} \notag
+\end{equation}
+writing the previous equation in term of $\Delta I =I_{1}-I_{2} $ and $\Delta V_{in} = V_{in,1}-V_{in,2}$ and computing the value of the slope ot this characteristic, one obtains that the maximum differential voltage gain in equilibrium condition $\Delta V_{in} =0$ is given by:
+\begin{equation}
+\label{eq_statiGain}
+|A_{v}|= \sqrt{\beta_{n}I_0}R_1
+\end{equation}
+This suggest that it is better to polarize the stage exactly with  $V_{GS1}=V_{GS2}$. The complete expression for equation \ref{eq_statiGain} also gives that the differential transconductance is a strongly non-linear function of the gate bias voltage. 
+
+As we said before there it is the possibility to have a mismatch between the transistors and the loads due to circuit dimensions, temperature distribution and process tolerances, then looking at FIGURE 3:$M3 \neq M4$ and $R1 \neq R2$. It can be demonstrated that the offset output voltage due to differences in the circuit parameters and dimensions is:
+\begin{equation}
+V_{o,offset}= \Delta V{th}+\frac{V_{GS}-V_{th}}{2}\Bigg(-\frac{\delta R}{2R}\frac{\Delta W /L}{2W/L}\Bigg) \notag
+\end{equation}
+To reduce this error a common centroid topology should be used in layout.
+Besides, it is important to notice that R1 and R2 are both the source output conductance of a common gate stage (mixing stage of the Gilbert cell) and that the actual gain for the RF stage is a current gain. 
+
+The small signal equivalent transconductance of the stage, once we added the source degeneration, (APPENDICE?) is given by:
+\begin{equation}
+G_{eq} = \frac{g_m}{1+g_m R_S}
+\end{equation}
+By adding $R_S$ we lower the RF stage's gain, however  we also get a more linear behaviour of the stage reducing gain's dependency with respect to bias (this fact will be demonstrated later).
+
+An important figure of merit concerning mixers is given by the -1dB compression point of the $V_{in}$/$V_{out}$ characteristic. By increasing the value of the RF signal the amount of harmonics at the output besides to the fundamental IF frequency increases as well, eventually saturating the output signals (gain compression or flatness). This is due to the fact that power is no more mainly carried by the fundamental output tone (i.e. the IF tone), but it is rather shared by all the growing up harmonics. In other words the conversion gain stops to be constant a reduces. Supposing to have input and output impedance matching one has that:
+\begin{align}
+	A_{v,conv}&=\frac{V_{IF}}{V_{RF}} \notag \\
+	20\log_{10}A_{v,conv} & = 20\log_{10}\frac{V_{IF}}{V_{RF}}  \notag \\
+	20\log_{10}V_{IF} & = 20\log_{10}A_{v,conv} + 20\log_{10}V_{RF} \notag \\	V_{IF}|_{dB20} &= A_{v,conv}|_{dB20} + V_{RF}|_{dB20} \notag
+\end{align}
+That suggest both that the output characteristic looks linear in log scale and that the -1dB compression point can be defined as the output IF voltage at which:
+\begin{equation}
+V_{IF}|_{-1dB} = A_{v,conv}|_{dB20} + V_{RF}|_{dB20} -1dB \notag
+\end{equation}
+hence:
+\begin{equation}
+V_{IF}|_{-1dB} = V_{IF}|_{dB20,ideal} -1dB \notag
+\end{equation}
+ 
+
+\subsection{Mathematical analysis: conversion gain}
+
+
+
 
