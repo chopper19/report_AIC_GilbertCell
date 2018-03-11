@@ -26,6 +26,10 @@
 
 %\usepackage [ Lenny ]{fncychap}
 \usepackage{longtable} % Required to put long tables
+\usepackage{float} 
+\usepackage{hyperref} % next packages are used to have navigation tree in pdf reader
+\hypersetup{pdftex,colorlinks=true,allcolors=black}
+\usepackage{hypcap}
 
 
 \usepackage{xstring}
@@ -52,12 +56,12 @@
 
 \title{	Analog Integrated Circuits \\
 	\huge {\textsc{Titolo serio}}	}
-
+ 	
 \begin{document}
 \author{Roberto Rr\\ chopper19\\
 }
 \date{DATA}
-\maketitle 		
+\maketitle	
 \tableofcontents
 \newpage
 \input{./TeX_files/01_Introduction}\newpage
