@@ -57,7 +57,7 @@ one eventually finds that:
 \end{equation}
 Then, some of the possible mismatch causes are:
 \begin{itemize}
-	\item $k_n$, that can varies a lot in case of wide circuits;
+	\item $K_n$, that can varies a lot in case of wide circuits;
 	\item $V_{od}$ that usually is set low and varies with $V_{th}$, whose small variation can produce large differences in the two currents;
 	\item difference between $V_{DS1}$ and $V_{DS2}$.
 \end{itemize}
@@ -117,23 +117,28 @@ The small signal equivalent transconductance of the stage, once we added the sou
 \begin{equation}
 G_{eq} = \frac{g_m}{1+g_m R_S}
 \end{equation}
-By adding $R_S$ we lower the RF stage's gain, however  we also get a more linear behaviour of the stage reducing gain's dependency with respect to bias (this fact will be demonstrated later).
+By adding $R_S$ we lower the RF stage's current gain, however  we also get a more linear behaviour reducing its dependency with respect to bias point (this fact will be demonstrated later). LINEARITA' CON OVERDRIVE?? (RAZAVI rf PAG 193)
 
-An important figure of merit concerning mixers is given by the -1dB compression point of the $V_{in}$/$V_{out}$ characteristic. By increasing the value of the RF signal the amount of harmonics at the output besides to the fundamental IF frequency increases as well, eventually saturating the output signals (gain compression or flatness). This is due to the fact that power is no more mainly carried by the fundamental output tone (i.e. the IF tone), but it is rather shared by all the growing up harmonics. In other words the conversion gain stops to be constant a reduces. Supposing to have input and output impedance matching one has that:
-\begin{align}
-	A_{v,conv}&=\frac{V_{IF}}{V_{RF}} \notag \\
-	20\log_{10}A_{v,conv} & = 20\log_{10}\frac{V_{IF}}{V_{RF}}  \notag \\
-	20\log_{10}V_{IF} & = 20\log_{10}A_{v,conv} + 20\log_{10}V_{RF} \notag \\	V_{IF}|_{dB20} &= A_{v,conv}|_{dB20} + V_{RF}|_{dB20} \notag
-\end{align}
-That suggest both that the output characteristic looks linear in log scale and that the -1dB compression point can be defined as the output IF voltage at which:
+\paragraph{Mixing stage}
+This stage is also called \emph{switching stage}, suggesting the way we want to drive transistors M6 to M9 (FIGURE 4). Also this one has a differential topology, however, differently from the RF stage, we drive each pair with complementary LO signals that turn on and off cycle-by-cycle one of the two devices. The driving signal il sinusoidal (similarly one can apply a square wave) and it must be large enough to ensure the abrupt switching of the stage: when a device is on it must be in saturation (not in  triode!), while the other one must be completely of, interdicted.
+A compromise is needed since:
+\begin{itemize}
+	\item small amplitude of LO signals produce slower switching speed, hence part of the power is wasted as common mode signal at the output;
+	\item too large LO signals drive the MOSFET in triode region producing spikes that corrupt the output signal with unwanted feed-through  and reduces speed.
+\end{itemize}
+Switching speed is related to the device cutoff frequency, that for short channel devices is inversely proportional to channel length and linearly dependent to the overdrive voltage:
 \begin{equation}
-V_{IF}|_{-1dB} = A_{v,conv}|_{dB20} + V_{RF}|_{dB20} -1dB \notag
+f_T \propto  V_{od}/L \notag
 \end{equation}
-hence:
-\begin{equation}
-V_{IF}|_{-1dB} = V_{IF}|_{dB20,ideal} -1dB \notag
-\end{equation}
- 
+suggesting that the highest overdrive and the minimum channel length should be chosen. Again, a compromise must be found among the following solutions:
+\begin{itemize}
+	\item Setting the available length ( the minimum is fixed by the used design kit);
+	\item Selecting higher overdrive voltage one has the possibility to increase f\textsubscript{T}, however to keep our switches in saturation and to obtain a large output swing we need to keep small this quantity;
+	\item Widening the gate width one has faster device, but the source to bulk capacitance increases, eventually shunting the RF signal coming from the LNA stage;
+	\item Reducing the current faster commutation is achieved, along with lower transconductance though.
+\end{itemize}
+
+
 
 \subsection{Mathematical analysis: conversion gain}
 
