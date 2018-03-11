@@ -116,9 +116,15 @@ Besides, it is important to notice that R1 and R2 are both the source output con
 The small signal equivalent transconductance of the stage, once we added the source degeneration, (APPENDICE?) is given by:
 \begin{equation}
 \label{eq_degenGain}
-G_{eq} = \frac{g_m}{1+g_m R_S}
+G_{m,eq} = \frac{g_m}{1+g_m R_S}
 \end{equation}
 By adding $R_S$ we lower the RF stage's current gain, however  we also get a more linear behaviour reducing its dependency with respect to bias point (this fact will be demonstrated later). LINEARITA' CON OVERDRIVE?? (RAZAVI rf PAG 193)
+
+The two transistors have the body contact connected to ground, this means that the threshold changes accordingly to the source to body voltage, V\textsubscript{SB}:
+\begin{equation}
+V_{th} = V_{th0}+\gamma_B\big(\sqrt{2\phi_P + V_{SB}}-\sqrt{2\phi_P}\big)
+\end{equation}
+This equation holds for all the transistors in the circuit but, other than in current mirror.
 
 \paragraph{Mixing stage}
 This stage is also called \emph{switching stage}, suggesting the way we want to drive transistors M6 to M9 (FIGURE 4). Also this one has a differential topology, however, differently from the RF stage, we drive each pair with complementary LO signals that turn on and off cycle-by-cycle one of the two devices. The driving signal il sinusoidal (similarly one can apply a square wave) and it must be large enough to ensure the abrupt switching of the stage: when a device is on it must be in saturation (not in  triode!), while the other one must be completely of, interdicted.
@@ -226,7 +232,7 @@ and substituting equation \ref{eq_SwitchingEquality} in \ref{eq_Iod1}:\footnote{
 i_{od}(t) &= -\frac{8i_d(t)}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
 &= -\frac{8I_{RF}}{\pi}\cos(\omega_{RF}t)\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
 &= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\cos(\omega_{RF}t)\sin(n\omega_{LO} t) \notag \\
-&= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n2} \sin[(\omega_{RF}+n\omega_{LO})t]+\sin[(\omega_{RF}-n\omega_{LO}) t]
+&= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{2n} \sin[(\omega_{RF}+n\omega_{LO})t]+\sin[(\omega_{RF}-n\omega_{LO}) t]
 \end{align}
 Considering only the fundamental tone of the LO signal (other frequency terms are out-of-band with respect to IF) and multiplying by $R_L=R_{L1}=R_{L2}$ one finds that the differential output voltage is given by:
 \begin{align}
@@ -247,9 +253,8 @@ It is now possible to highlight that:
 	\item in first approximation the conversion gain does not depends on the amplitude of the LO signal;
 	\item both LO and RF components are rejected at the output;
 	\item it is possible to keep only the IF component by filter out the HF signal;
-	\item the degeneration resistance R\textsubscript{S} improve the stage's linearity. In fact, if properly chosen, one has: $A_{vC}\simeq\frac{2}{\pi}\frac{R_L}{R_S}$;
-	\item besides to linearity the conversion gain is less sensitive with respect to the RF stage bias point;
-	\item no information about frequency behaviour appear with this kind of analysis.
+	\item the degeneration resistance R\textsubscript{S} improve the stage's linearity. In fact, if properly chosen, one has: $A_{vC}|_{g_m \ll R_S}\simeq\frac{2}{\pi}\frac{R_L}{R_S}$. Besides to linearity, the conversion gain is less sensitive with respect to the RF stage bias point;
+	\item no informations about frequency behaviour appear with this kind of analysis.
 \end{itemize}  
 
 
