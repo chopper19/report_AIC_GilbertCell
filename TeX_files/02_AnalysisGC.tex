@@ -1,4 +1,4 @@
-\section{Analysis of a Gilbert cell-based analog multiplier }
+\section{Analysis of a Gilbert cell-based multiplier }
 
 \subsection{Gilbert cell overview}
 A CMOS-based technology Gilbert cell-based mixer is shown in figure \textbf{AGGIUNGI IMMAGINE}. This circuit exploits a differential topology to implement a double-balanced cell providing:
@@ -115,6 +115,7 @@ Besides, it is important to notice that R1 and R2 are both the source output con
 
 The small signal equivalent transconductance of the stage, once we added the source degeneration, (APPENDICE?) is given by:
 \begin{equation}
+\label{eq_degenGain}
 G_{eq} = \frac{g_m}{1+g_m R_S}
 \end{equation}
 By adding $R_S$ we lower the RF stage's current gain, however  we also get a more linear behaviour reducing its dependency with respect to bias point (this fact will be demonstrated later). LINEARITA' CON OVERDRIVE?? (RAZAVI rf PAG 193)
@@ -126,7 +127,7 @@ A compromise is needed since:
 	\item small amplitude of LO signals produce slower switching speed, hence part of the power is wasted as common mode signal at the output;
 	\item too large LO signals drive the MOSFET in triode region producing spikes that corrupt the output signal with unwanted feed-through  and reduces speed.
 \end{itemize}
-Switching speed is related to the device cutoff frequency, that for short channel devices is inversely proportional to channel length and linearly dependent to the overdrive voltage:
+Switching speed is related to the device cut-off frequency, that for short channel devices is inversely proportional to channel length and linearly dependent to the overdrive voltage:
 \begin{equation}
 f_T \propto  V_{od}/L \notag
 \end{equation}
@@ -138,10 +139,117 @@ suggesting that the highest overdrive and the minimum channel length should be c
 	\item Reducing the current faster commutation is achieved, along with lower transconductance though.
 \end{itemize}
 
+Even if the switching stage is not linear it is possible to define its gain and in order to do that we analyse one single pair. We recall that the gate LO signal modulates the stage drain current as a square wave, that can be written in term of its Fourier's series:
+\begin{equation}
+ i_D(t)=I_{pk}\Bigg(\frac{1}{2}-\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega t)\Bigg) \notag
+\end{equation} 
+where only odd harmonics are present. The instantaneous gain fo the stage, related to the first harmonic is:
+\begin{equation}
+\label{eq_SwitchGain}
+A_c|_{switch} = \frac{2}{\pi}
+\end{equation}
+that is neither dependent on the bias of the stage nor on the actual device transconductance.\footnote{It is however important to remember what stated above, regarding the intensity of the applied gate voltage, that further reduces this quantity in case of too large input signals. Moreover its better to notice that the stage introduces a loss rather than an actual gain.} It is important to notice that equation \ref{eq_SwitchGain} is exact in case of gate's square wave signals, whereas in case of sinusoidal driving the actual gain will be reduced because of the smoother variation of the drain current waveform.
+
+\paragraph{Load stage} 
+The load stage is formed by two resistors R\textsubscript{L} whose role is to give the stage enough gain and to set the output bias voltage through the RF drain current. They must be as matched as possible to make the differential outputs of the Gilbert cell equals.
 
 
 \subsection{Mathematical analysis: conversion gain}
 
+As already known a mixer is a non-linear time variant system, hence a descriptive approach based on the behaviour of the cell is well suited to find the conversion gain of the cell.\footnote{It is not possible to use neither the superposition of effect nor the Laplace transform to compute the gain due to the presence of the switching pairs.} 
+The following analysis is based on the schematic in \textbf{FIGURE 6}.
 
+We suppose all the transistors in gain stage and bias in saturation, then we identify:
+\begin{itemize}
+	\item i\textsubscript{3} and i\textsubscript{4} the current through M3 and M4;
+	\item i\textsubscript{6} and i\textsubscript{7} the current through M6 and M7;
+	\item i\textsubscript{8} and i\textsubscript{9} the current through M8 and M9;
+	\item i\textsubscript{o1} the current through R\textsubscript{L1};
+	\item i\textsubscript{o2} the current through R\textsubscript{L2};
+	\item I\textsubscript{D} the bias current;
+	\item i\textsubscript{od} the output differential bias current;
+	\item $S(t)=\frac{1}{2}-\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t)$ is the switching function of the mixing cell (then we consider the LO stage as it was made up of ideal switches).
+\end{itemize}
+The differential input RF signal is given by:
+\begin{equation}
+\label{eq_inRFSignal}
+v_{RF}(t)=\frac{V_{RF}}{2}\cos (\omega_{RF}t) 
+\end{equation}
+Currents flowing into the two RF stages are given by:
+\begin{align}
+i_3(t) &= I_D + i_d(t)\\
+i_4(t) &= I_D - i_d(t)
+\end{align}
+where, from equation \ref{eq_degenGain}, the $i_d$ current is a small signal variation given by:
+\begin{align}
+i_d(t)&=I_{RF}\cos (\omega_{RF}t) \notag \\
+&= G_{m3,4}\frac{V_{RF}}{2}\cos (\omega_{RF}t) 
+\end{align}
+It is now possible to define the current flowing into the switching stage recalling that they are discontinuous functions modulated by the switching function S(t):
+\begin{align}
+ i_6(t) &= [I_D + i_d(t)]S(t) \\
+ i_7(t) &= [I_D + i_d(t)]S(t-T_{LO}/2)
+\end{align}
+and 
+\begin{align}
+i_8(t) &= [I_D - i_d(t)]S(t-T_{LO}/2) \\
+i_9(t) &= [I_D - i_d(t)]S(t)
+\end{align}
+because M6 and M9 share the same LO signal, the same holds for M7 and M8. 
+Hence the current through R\textsubscript{L1} and R\textsubscript{L2} is given by:
+\begin{align}
+i_{o1}(t) &= I_6(t)+I_8(t) \notag \\
+&=[I_D + i_d(t)]S(t)+[I_D - i_d(t)]S(t-T_{LO}/2) 
+\end{align}
+and 
+\begin{align}
+i_{o2}(t) &= I_7(t)+I_9(t) \notag \\
+&=[I_D + i_d(t)]S(t-T_{LO}/2)+[I_D - i_d(t)]S(t) 
+\end{align}
+Hence, the output differential current is:
+\begin{align}
+\label{eq_Iod1}
+i_{od}(t) &= I_{o1}(t)-I_{o2}(t) \notag \\
+&=2i_d(t) S(t)-2i_d(t)S(t-T_{LO}/2) 
+\end{align}
+Noticing that:
+\begin{align}
+\label{eq_SwitchingEquality}
+S(t-T_{LO}/2) &=\frac{1}{2}-\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t-T_{LO}/2) \notag \\
+&= \frac{1}{2}+\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
+& =1- \frac{1}{2}+\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
+&= 1 - S(t)
+\end{align}
+and substituting equation \ref{eq_SwitchingEquality} in \ref{eq_Iod1}:\footnote{$cos(x)sin(y)=\frac{1}{2}sin(x+y)+\frac{1}{2}sin(x-y)$}
+\begin{align}
+\label{eq_Iod2}
+i_{od}(t) &= -\frac{8i_d(t)}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
+&= -\frac{8I_{RF}}{\pi}\cos(\omega_{RF}t)\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
+&= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\cos(\omega_{RF}t)\sin(n\omega_{LO} t) \notag \\
+&= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n2} \sin[(\omega_{RF}+n\omega_{LO})t]+\sin[(\omega_{RF}-n\omega_{LO}) t]
+\end{align}
+Considering only the fundamental tone of the LO signal (other frequency terms are out-of-band with respect to IF) and multiplying by $R_L=R_{L1}=R_{L2}$ one finds that the differential output voltage is given by:
+\begin{align}
+v_{od}(t)& = -\frac{4I_{RF}R_L}{\pi}\{\sin[(\omega_{RF}+\omega_{LO}) t]+\sin[(\omega_{RF}-\omega_{LO}) t]\} \notag \\
+& = -\frac{4I_{RF}R_L}{\pi}[\sin(\omega_{HF} t)+\sin(\omega_{IF} t)]
+\end{align}
+then, referring to the IF component:
+\begin{align}
+v_{od,IF}(t)& = -\frac{4I_{RF}R_L}{\pi}\sin(\omega_{IF} t) \notag \\
+& = -\frac{2G_{m3,4}R_LV_{RF}}{\pi}\sin(\omega_{IF} t) 
+\end{align}
+that eventually yields the Gilbert cell mixer conversion gain:
+\begin{equation}
+A_{vC} = -\frac{2}{\pi}\frac{R_L}{\frac{1}{g_{m3,4}}+R_S}
+\end{equation}
+It is now possible to highlight that:
+\begin{itemize}
+	\item in first approximation the conversion gain does not depends on the amplitude of the LO signal;
+	\item both LO and RF components are rejected at the output;
+	\item it is possible to keep only the IF component by filter out the HF signal;
+	\item the degeneration resistance R\textsubscript{S} improve the stage's linearity. In fact, if properly chosen, one has: $A_{vC}\simeq\frac{2}{\pi}\frac{R_L}{R_S}$;
+	\item besides to linearity the conversion gain is less sensitive with respect to the RF stage bias point;
+	\item no information about frequency behaviour appear with this kind of analysis.
+\end{itemize}  
 
 
