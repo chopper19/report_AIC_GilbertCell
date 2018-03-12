@@ -1,15 +1,15 @@
 \section{Analysis of a Gilbert cell-based multiplier }
 
 \subsection{Gilbert cell overview}
-A CMOS-based technology Gilbert cell-based mixer is shown in figure \textbf{AGGIUNGI IMMAGINE}. This circuit exploits a differential topology to implement a double-balanced cell providing:
+A CMOS-based technology Gilbert cell-based mixer is shown in figure \textbf{AGGIUNGI IMMAGINE}. This circuit exploits a differential topology to implement a double-balanced cell, providing:
 \begin{itemize}
 	\item Reasonable conversion gain (from one to some tens);
-	\item Thanks to the double-balanced topology if performs good rejection of input frequency components to the output port along with high linearity;\footnote{The linearity is meant with respect to the conversion gain.}
+	\item Good rejection of input frequency components to the output port along with high linearity, thanks to the double-balanced topology if performs ;\footnote{The linearity is meant with respect to the conversion gain.}
 	\item Good isolation between ports is provided by the high suppression of spurious frequency components;
-	\item Thanks to the CMOS architecture it can be integrated.
+	\item Possibility of integration thanks to the CMOS architecture.
 \end{itemize}
 \subsection{Gilbert cell circuit analysis}
-To analyse the circuit it is necessary to give some informations about its topology, polarization and driving. Looking a FIGURA DOVE C'E' MIXER COMPLETO it is possible to identify five main blocks that are described in what follows.
+To analyse the circuit it is necessary to give some informations about its topology, polarization and driving. Looking at\textbf{ FIGURA DOVE C'E' MIXER COMPLETO} it is possible to identify five main blocks that are described in what follows.
 \paragraph{Bias net}
 
 This net is made up of the current mirror (transistors M1 and M2) and the voltage reference generation branch (transistor M5, R1, R2, R3, R4, R5). 
@@ -36,7 +36,7 @@ The output resistance in instead defined by:
 \begin{equation}
  r_o = \frac{1}{\lambda I_0} \propto L
 \end{equation}
-where $\lambda$ takes count of the channel modulation. It appears that we need long transistors to have better current sink's properties.
+where $\lambda$ takes count of the channel modulation. It appears that we need long transistors to have better current sinking properties.
 By looking at FIGURE 2, one has (supposing both M2 and M1 in saturation, and $V_{GS1}=V_{GS2}=V_{DS1}=V_{DS2}$):
 \begin{gather}
 I_0 = \frac{\beta_{n1}}{2}(V_{GS1}-V_{th})^2(1+\lambda_1V_{DS1}) \notag \\
@@ -46,7 +46,7 @@ hence, supposing to have equal transistors:
 \begin{equation}
 \frac{I_0}{I_{REF}} = \frac{W_1/L_1}{W_2/L_2} 
 \end{equation}
-Ideally the current mirroring is only depending on geometrical parameters, this means that a very good matching is required. Even if the two devices are very close to each other within the same chip, it exists the possibility to have a variation in parameters that depend on temperature, i.e. $V_{th}$ and $\mu_{n,eff}$. Supposing to have equal devices with everything constant but:
+Ideally the current mirroring is only depending on geometrical parameters, meaning that a very good matching is required. Even if the two devices are very close to each other within the same chip, the possibility to have a variation in parameters that depend on temperature exists, i.e. $V_{th}$ and $\mu_{n,eff}$. Supposing to have equal devices with everything constant but:
 \begin{gather}
 K_{n1}=K_n+\Delta K_n \notag \\
 V_{th,1} = V_{th}+\Delta V_{th} \notag
@@ -78,14 +78,14 @@ A cascaded voltage divider is connected as M2's load:
 	\item Capacitors C1 and C2 shunt possible non-DC disturbances coming from the Gilbert Cell, improving the bias isolation.
 \end{itemize}
 
-Noise issues will not be analysed within this treatise, it should be considered for a more complete design though. As a rule of thumb, narrow gate and low overdrive voltages should used to lower noise contribution.(FONTE) 
+Noise issues will not be analysed within this treatise,even if it should be considered for a more complete design though. As a rule of thumb, narrow gate and low overdrive voltages should used to lower noise contribution.(FONTE) 
 Using a resistive voltage reference can be detrimental in case of voltage supply fluctuation, since a resistive voltage divider cannot reject current variations. However using active devices we would produce much more noise injection within the net though.
 
 \paragraph{Gain stage}
 
-The gain stage (shown in figure 3) is the linear part of the mixer, it must handle without distortion and corruptions the power coming from the RF signal giving some amplification. The topology is suited for a low noise amplifying purpose (FONTE): a differential stage with source degeneration. The stage is made up of two transistors (M3 and M4) in common source configuration directly polarized by M1 and two source degeneration resistances $R_S$.
+The gain stage (shown in figure 3) is the linear part of the mixer, it must handle without distortion and corruptions the power coming from the RF signal giving some amplification. The topology is suited for a low noise amplifying purpose (FONTE): a differential stage with source degeneration. The stage is made up of two transistors (M3 and M4) in common source configuration, polarized with current by M1, and two source degeneration resistances $R_S$.
 
-The RF differential signal modulates the current flowing into each of the two transistors, that has to be polarized in saturation region. For both of them it must be ensured an high output voltage range and a quite low overdrive voltage, along with a large drain to source bias voltage (required to maintain the stage in saturation during the swing of the LO stage).
+The RF differential signal modulates the current flowing into each of the two transistors, that have to be polarized in saturation region. For both of them it must be ensured an high output voltage range and a quite low overdrive voltage, along with a large drain-to-source bias voltage (required to maintain the stage in saturation during the swing of the LO stage).
 
 To have an idea on the gain that can be obtained by this stage, one can look at the stage in FIGURE 3. Removing the degeneration resistances one has that the gate-to-gate mesh gives:
 \begin{equation}
@@ -95,40 +95,40 @@ from equation \ref{eq:Id_quadLaw}, recalling that $I_{1}+I_{2}=I_0$ and squaring
 \begin{equation}
 (V_{in,1}-V_{in,2})^2 = \frac{2}{\beta_n}(I_0-2\sqrt{I_1 I_2}) \notag
 \end{equation}
-that once inverted yields
+that once inverted yields:
 \begin{equation}
 I_{1}-I_{2} = \sqrt{\beta_n I_0}(V_{in,1}-V_{in,2})\sqrt{1-\frac{\beta_n}{4I_0}(V_{in,1}-V_{in,2})^2} \notag
 \end{equation}
-writing the previous equation in term of $\Delta I =I_{1}-I_{2} $ and $\Delta V_{in} = V_{in,1}-V_{in,2}$ and computing the value of the slope ot this characteristic, one obtains that the maximum differential voltage gain in equilibrium condition $\Delta V_{in} =0$ is given by:
+Writing the previous equation in term of $\Delta I =I_{1}-I_{2} $ and $\Delta V_{in} = V_{in,1}-V_{in,2}$ and computing the value of the slope ot this characteristic, one obtains that the \emph{maximum} differential voltage gain in equilibrium condition $\Delta V_{in} =0$ is given by:
 \begin{equation}
 \label{eq_statiGain}
-|A_{v}|= \sqrt{\beta_{n}I_0}R_1
+|A_{v}|= \sqrt{\beta_{n}I_0}R_L1
 \end{equation}
 This suggest that it is better to polarize the stage exactly with  $V_{GS1}=V_{GS2}$. The complete expression for equation \ref{eq_statiGain} also gives that the differential transconductance is a strongly non-linear function of the gate bias voltage. 
 
-As we said before there it is the possibility to have a mismatch between the transistors and the loads due to circuit dimensions, temperature distribution and process tolerances, then looking at FIGURE 3:$M3 \neq M4$ and $R1 \neq R2$. It can be demonstrated that the offset output voltage due to differences in the circuit parameters and dimensions is:
+As we said before there it is the possibility to have mismatch between the transistors and the loads due to circuit dimensions, temperature distribution and process tolerances. Then, looking at FIGURE 3, $M3 \neq M4$ and $R1 \neq R2$. It can be demonstrated that the offset output voltage due to differences in the circuit parameters and dimensions is:
 \begin{equation}
 V_{o,offset}= \Delta V{th}+\frac{V_{GS}-V_{th}}{2}\Bigg(-\frac{\delta R}{2R}\frac{\Delta W /L}{2W/L}\Bigg) \notag
 \end{equation}
 To reduce this error a common centroid topology should be used in layout.
-Besides, it is important to notice that R1 and R2 are both the source output conductance of a common gate stage (mixing stage of the Gilbert cell) and that the actual gain for the RF stage is a current gain. 
+Besides, it is important to notice that R\textsubscript{L1} and R\textsubscript{L2} are both the source output conductance of a common gate stage (mixing stage of the Gilbert cell) and that the actual gain for the RF stage is a current gain. 
 
 The small signal equivalent transconductance of the stage, once we added the source degeneration, (APPENDICE?) is given by:
 \begin{equation}
 \label{eq_degenGain}
 G_{m,eq} = \frac{g_m}{1+g_m R_S}
 \end{equation}
-By adding $R_S$ we lower the RF stage's current gain, however  we also get a more linear behaviour reducing its dependency with respect to bias point (this fact will be demonstrated later). LINEARITA' CON OVERDRIVE?? (RAZAVI rf PAG 193)
+By adding $R_S$ we lower the RF stage's current gain, however  we also get a more linear behaviour reducing its dependency with respect to bias point (this fact will be demonstrated later). \textbf{LINEARITA' CON OVERDRIVE?? (RAZAVI rf PAG 193)}
 
 The two transistors have the body contact connected to ground, this means that the threshold changes accordingly to the source to body voltage, V\textsubscript{SB}:
 \begin{equation}
 \label{eq_thresholdV}
 V_{th} = V_{th0}+\gamma_B\big(\sqrt{2\phi_P + V_{SB}}-\sqrt{2\phi_P}\big)
 \end{equation}
-This equation holds for all the transistors in the circuit but, other than in current mirror.
+This equation holds for all the transistors in the circuit, other than in current mirror.
 
 \paragraph{Mixing stage}
-This stage is also called \emph{switching stage}, suggesting the way we want to drive transistors M6 to M9 (FIGURE 4). Also this one has a differential topology, however, differently from the RF stage, we drive each pair with complementary LO signals that turn on and off cycle-by-cycle one of the two devices. The driving signal il sinusoidal (similarly one can apply a square wave) and it must be large enough to ensure the abrupt switching of the stage: when a device is on it must be in saturation (not in  triode!), while the other one must be completely of, interdicted.
+This stage is also called \emph{switching stage}, suggesting the way we want to drive transistors M6 to M9 (FIGURE 4). Also this one has a differential topology, however, differently from the RF stage, we drive each pair with complementary LO signals that turn on and off cycle-by-cycle one of the two devices. The driving signal il sinusoidal (similarly one can apply a square wave) and it must be large enough to ensure the abrupt switching of the stage: when a device is on it must be in saturation (not in  triode! These are actually \emph{switch-like} transistors), while the other one must be completely of, interdicted.
 A compromise is needed since:
 \begin{itemize}
 	\item small amplitude of LO signals produce slower switching speed, hence part of the power is wasted as common mode signal at the output;
@@ -142,8 +142,8 @@ suggesting that the highest overdrive and the minimum channel length should be c
 \begin{itemize}
 	\item Setting the available length ( the minimum is fixed by the used design kit);
 	\item Selecting higher overdrive voltage one has the possibility to increase f\textsubscript{T}, however to keep our switches in saturation and to obtain a large output swing we need to keep small this quantity;
-	\item Widening the gate width one has faster device, but the source to bulk capacitance increases, eventually shunting the RF signal coming from the LNA stage;
-	\item Reducing the current faster commutation is achieved, along with lower transconductance though.
+	\item Widening the gate width one has faster device, but the source to bulk capacitance increases, eventually shunting the RF signal coming from the LNA stage to ground;
+	\item Reducing the current a faster commutation is achieved, along with lower transconductance though.
 \end{itemize}
 
 Even if the switching stage is not linear it is possible to define its gain and in order to do that we analyse one single pair. We recall that the gate LO signal modulates the stage drain current as a square wave, that can be written in term of its Fourier's series:
@@ -163,7 +163,7 @@ The load stage is formed by two resistors R\textsubscript{L} whose role is to gi
 
 \subsection{Mathematical analysis: conversion gain}
 
-As already known a mixer is a non-linear time variant system, hence a descriptive approach based on the behaviour of the cell is well suited to find the conversion gain of the cell.\footnote{It is not possible to use neither the superposition of effect nor the Laplace transform to compute the gain due to the presence of the switching pairs.} 
+As already stated a mixer is a non-linear time variant system, hence a descriptive approach based on the behaviour of the cell is well suited to find the conversion gain of the cell.\footnote{It is not possible to use neither the superposition of effect nor the Laplace transform to compute the gain due to the presence of the switching pairs.} 
 The following analysis is based on the schematic in \textbf{FIGURE 6}.
 
 We suppose all the transistors in gain stage and bias in saturation, then we identify:
@@ -202,7 +202,7 @@ and
 i_8(t) &= [I_D - i_d(t)]S(t-T_{LO}/2) \\
 i_9(t) &= [I_D - i_d(t)]S(t)
 \end{align}
-because M6 and M9 share the same LO signal, the same holds for M7 and M8. 
+because M6 and M9 share the same LO signal; the same holds for M7 and M8. 
 Hence the current through R\textsubscript{L1} and R\textsubscript{L2} is given by:
 \begin{align}
 i_{o1}(t) &= I_6(t)+I_8(t) \notag \\
@@ -213,7 +213,7 @@ and
 i_{o2}(t) &= I_7(t)+I_9(t) \notag \\
 &=[I_D + i_d(t)]S(t-T_{LO}/2)+[I_D - i_d(t)]S(t) 
 \end{align}
-Hence, the output differential current is:
+Therefore, the output differential current is:
 \begin{align}
 \label{eq_Iod1}
 i_{od}(t) &= I_{o1}(t)-I_{o2}(t) \notag \\
@@ -227,7 +227,7 @@ S(t-T_{LO}/2) &=\frac{1}{2}-\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\si
 & =1- \frac{1}{2}+\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
 &= 1 - S(t)
 \end{align}
-and substituting equation \ref{eq_SwitchingEquality} in \ref{eq_Iod1}:\footnote{$cos(x)sin(y)=\frac{1}{2}sin(x+y)+\frac{1}{2}sin(x-y)$}
+and substituting equation \ref{eq_SwitchingEquality} in \ref{eq_Iod1}\footnote{$cos(x)sin(y)=\frac{1}{2}sin(x+y)+\frac{1}{2}sin(x-y)$} we get:
 \begin{align}
 \label{eq_Iod2}
 i_{od}(t) &= -\frac{8i_d(t)}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
@@ -245,17 +245,17 @@ then, referring to the IF component:
 v_{od,IF}(t)& = -\frac{4I_{RF}R_L}{\pi}\sin(\omega_{IF} t) \notag \\
 & = -\frac{2G_{m3,4}R_LV_{RF}}{\pi}\sin(\omega_{IF} t) 
 \end{align}
-that eventually yields the Gilbert cell mixer conversion gain:
+that, considering the IF and RF \emph{rms} values eventually yields the Gilbert cell mixer conversion gain:
 \begin{equation}
 \label{eq:ConvGain}
-A_{vC} = -\frac{2}{\pi}\frac{R_L}{\frac{1}{g_{m3,4}}+R_S}
+A_{vC} = \frac{2}{\pi}\frac{R_L}{\frac{1}{g_{m3,4}}+R_S}
 \end{equation}
 It is now possible to highlight that:
 \begin{itemize}
 	\item in first approximation the conversion gain does not depends on the amplitude of the LO signal;
 	\item both LO and RF components are rejected at the output;
 	\item it is possible to keep only the IF component by filter out the HF signal;
-	\item the degeneration resistance R\textsubscript{S} improve the stage's linearity. In fact, if properly chosen, one has: $A_{vC}|_{g_m \ll R_S}\simeq\frac{2}{\pi}\frac{R_L}{R_S}$. Besides to linearity, the conversion gain is less sensitive with respect to the RF stage bias point;
+	\item the degeneration resistance R\textsubscript{S} improve the stage's linearity. In fact, if properly chosen, one has: $A_{vC}|_{g_m3,4 \ll R_S}\simeq\frac{2}{\pi}\frac{R_L}{R_S}$. Besides to linearity, the conversion gain is less sensitive with respect to the RF stage bias point;
 	\item no informations about frequency behaviour appear with this kind of analysis.
 \end{itemize}  
 
