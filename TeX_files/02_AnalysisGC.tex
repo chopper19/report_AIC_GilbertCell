@@ -122,6 +122,7 @@ By adding $R_S$ we lower the RF stage's current gain, however  we also get a mor
 
 The two transistors have the body contact connected to ground, this means that the threshold changes accordingly to the source to body voltage, V\textsubscript{SB}:
 \begin{equation}
+\label{eq_thresholdV}
 V_{th} = V_{th0}+\gamma_B\big(\sqrt{2\phi_P + V_{SB}}-\sqrt{2\phi_P}\big)
 \end{equation}
 This equation holds for all the transistors in the circuit but, other than in current mirror.
@@ -232,7 +233,7 @@ and substituting equation \ref{eq_SwitchingEquality} in \ref{eq_Iod1}:\footnote{
 i_{od}(t) &= -\frac{8i_d(t)}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
 &= -\frac{8I_{RF}}{\pi}\cos(\omega_{RF}t)\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
 &= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\cos(\omega_{RF}t)\sin(n\omega_{LO} t) \notag \\
-&= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{2n} \sin[(\omega_{RF}+n\omega_{LO})t]+\sin[(\omega_{RF}-n\omega_{LO}) t]
+&= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{2n}\Big\{ \sin[(\omega_{RF}+n\omega_{LO})t]+\sin[(\omega_{RF}-n\omega_{LO}) t]\Big\}
 \end{align}
 Considering only the fundamental tone of the LO signal (other frequency terms are out-of-band with respect to IF) and multiplying by $R_L=R_{L1}=R_{L2}$ one finds that the differential output voltage is given by:
 \begin{align}
@@ -246,6 +247,7 @@ v_{od,IF}(t)& = -\frac{4I_{RF}R_L}{\pi}\sin(\omega_{IF} t) \notag \\
 \end{align}
 that eventually yields the Gilbert cell mixer conversion gain:
 \begin{equation}
+\label{eq:ConvGain}
 A_{vC} = -\frac{2}{\pi}\frac{R_L}{\frac{1}{g_{m3,4}}+R_S}
 \end{equation}
 It is now possible to highlight that:
