@@ -1,2 +1,140 @@
-\section{Design by hand}
+\section{Design by hand of a down-converting Gilbert cell}
+
+\subsection{Design specifications}
+The design specifications follow:
+\begin{itemize}
+	\item The use technology is the AMI 0.6$\mu$m by MOSIS. \textbf{No constrains regarding maximum gate width are considered. This technology is nowadays  old-fashioned, hence this project has only didactic purposes}. The Cadence Design Environment will be used to carry on the project;
+	\item the supply voltage is V\textsubscript{DD}=5V;
+	\item we are design a down-conversion mixer. The analysis will be carried on considering two monochromatic signals f\textsubscript{RF}=110 MHz and f\textsubscript{LO}=100 MHz, producing a wanted baseband signal at f\textsubscript{IF}=10 MHz (the HF component is considered as filtered out);
+	\item all the transistors should work in saturation;
+	\item the conversion gain is chosen accordingly to the previous specification equal to A\textsubscript{vC}=4.
+\end{itemize}
+The most important parameters used in the design are reported in the following table: \footnote{MOSFET's parameters are intended at T=27$^\circ$C}
+\begin{table} [h]
+	\label{tab:specs}
+	\caption{}
+	\centering	
+	\begin{tabular}{lcc} 
+		\toprule 
+		Parameter Name			& Value 	& Unit \\ 
+		\midrule
+		V\textsubscript{DD}		&	5 & V		\\
+		I\textsubscript{0} & 5 & mA \\
+		V\textsubscript{th0}			& 0.709 &V		\\ 
+		K\textsubscript{n} & 116 & $\mu$A/V\textsuperscript{2}\\
+		I\textsubscript{dss}	& 466 & $\mu$A/$\mu$m \\
+		$\phi_P$ & 0.7 & V \\
+		$\gamma_B$ & 0.5 & V \\
+		L\textsubscript{min} & 0.6 & $\mu$m \\
+		\bottomrule 
+	\end{tabular}	
+\end{table}
+
+It is necessary to notice that the following calculation is carried on considering the easiest between the physic-based models for a MOSFET, i.e. the level 1 model and its aim is to make the reader to understand the design choices that follow in the next section. Moreover, the used model relies on a level 3 model, that takes count of short channel effects (we are using sub-micrometric devices) and non-ideality such as the carrier velocity saturation. 
+
+\subsection{Gilbert cell design flow} 
+
+\paragraph{Current mirror polarization}
+
+Both M1 and M2 must be in saturation. We choose the same current to flow in the weak and strong branches in order to have equal structures (this aids the circuit symmetry and matching, allowing us to use interdigitated structure). We impose:
+\begin{gather}
+I_{D1} = I_{D2} = I_0 = 5 mA \notag \\
+V_{od1}=V_{od2}=0.4 V  \notag \\
+L_1 =3 L_{mim} = 1.8 \mu m \notag
+\end{gather} 
+The current magnitude is chosen thinking about the mixer used in a transmitter receiving chain, after an hypothetical power stage. The overdrive voltage's value is chose in order to keep turned on the stage even with strong fluctuation of the drain node. However, to have the same current mirrored we must have:
+\begin{gather}
+	V_{GS1} = V_{VGS2} \notag \\
+	V_{DS1} = V_{DS2} \notag \\
+	W_1 = W_2 \notag \\
+\end{gather}
+suggesting that this kind of current source can work properly only with small signal variation coming from the RF stage. Now, by using \ref{eq:Id_quadLaw}, neglecting channel modulation effects and inverting:
+\begin{equation}
+W_1 = \frac{2I_0}{K_n V_{od1}^2}L_1 = 969.8 \mu m
+\end{equation}
+Both M1 and M2 are not affected by body effect, then:
+\begin{equation}
+	V_{th1}=V_{th2}=V_{th0} \notag \\
+\end{equation}
+hence:
+\begin{equation}
+V_{GS2}=V_{DS2}= V_{th0}+\sqrt{\frac{2I_0L_1}{K_n W_1 }} = 1.1 V
+\end{equation}
+
+\paragraph{Load stage and gain choice}
+As previously stated we chose A\textsubscript{vC}=4. 
+Since the whole differential structure must be symmetrical, current I\textsubscript{0} is evenly split into M3 and M4: this is the same current flowing also into the two loads. In order to give the LO stage \textbf{enough output swing} we impose one third of the supply voltage must drop on the load. Therefore, we can calculate the load resistance's value:
+\begin{equation}
+R_L = \frac{\frac{2}{3}V_{DD}}{I_0/2} = 1.33 k\Omega
+\end{equation}
+
+\paragraph{Gain stage polarization}
+The design of the RF bias begins with the choice of its transconductance, fixed by A\textsubscript{vC}, R\textsubscript{L} and R\textsubscript{S}. We consider M3 and M4 equal and in saturation. The gate length for this stage is set
+\begin{equation}
+	L_3 = L_4 = 3 L_{min} = 1.8 \mu m
+\end{equation} 
+The  degeneration resistance's value is chosen equal to 10$\Omega$, hence:
+\begin{equation}
+V_{R_S}=\frac{R_S}{I_0/2} = 25 mV
+\end{equation}
+Now, by inverting equation \ref{eq:ConvGain}:
+\begin{equation}
+	g_{m3} = \frac{\pi}{2}\frac{1}{\frac{R_L}{A_{vC}}-R_S}=6.9 mS
+\end{equation}
+We notice that we have many variables that are involved and that directly affect the design feasibility:
+\begin{itemize}
+	\item high values of R\textsubscript{S} decrease the RF stage transconductance, requiring large transistors with low overdrives. Low values give instead more transconductance and linearity reducing the output dynamic though;
+	\item increasing the conversion gain we have the same effects reported before, however mixing signals is a strongly inefficient operation, then we cannot reduce too much this quantity;
+	\item the choice of the load is important to fix the output dynamic and must be chosen carefully.
+\end{itemize}
+By inverting equation \ref{eq_statiGain}:
+\begin{equation}
+W_3 = g_{m3}^2\frac{2L_{3}}{K_nI_0} = 148.5 \mu m
+\end{equation}
+We have body effect due to the source to body voltage, shared by M3 and M4:
+\begin{equation}
+	V_{SB3} = V_{DS1}+V_{R_S}
+\end{equation} 
+then, from equation \ref{eq_thresholdV}:
+\begin{equation}
+	V_{th3} = V_{th0}+\gamma_B\big(\sqrt{2\phi_P + V_{SB3}}-\sqrt{2\phi_P}\big) = 0.957 V 
+\end{equation}
+from which it comes that:
+\begin{gather}
+	V_{od3}=\sqrt{\frac{I_0}{K_n W_3/L_3}} = 0.723 V \\
+	V_{GS3} = V_{th3}+V_{od3} = 1.731 V
+\end{gather}
+Unfortunately the value of the overdrive voltage looks large \textbf{(FONTE)}, requiring us to fix V\textsubscript{DS3,4} high enough to avoid the stage to be turned off by LO's output swing. We impose to have half the supply voltage to drop on the gain stage and current mirror, having:
+\begin{equation}
+	V_{DS3} = \frac{1}{2}V_{DD}-V_{DS2} = 1.4 V
+\end{equation}
+To ensure saturation of M3 and M2 we set:
+\begin{equation}
+	V_{G3}=V_{GS3} +V_{R_{S}}+V_{DS1} = 2.805 V 
+\end{equation}
+
+\paragraph{Mixing stage polarization}
+
+Also in this case we require transistors from M6 to M9 to be in saturation (they are equal and biased the same way). We reduce as much as possible the overdrive voltage: in this way the stage is kept nearby the threshold fostering a the commutation of the switches. Having small overdrives we produces large transistors then, to limit this we set:
+\begin{gather}
+	L_6 = L_min  \\
+	V_{od6} = 150mV 
+\end{gather}
+By using \ref{eq:Id_quadLaw} and taking in count the body effect we get:
+\begin{gather}
+W_6 = 1.1mm \\
+V_{SB6} = V_{DS1}+V_{R_S}+V_{DS2}\\
+V_{th6} = 1.18V
+\end{gather}
+This result does not consider short channel effects, that produces a different threshold dependency on source to bulk voltage. However, considering ideal behaviour we have that the M6 to M9's bias gate voltage is:
+\begin{gather}
+	V_{GS6}=1.326V \\
+	V_{G3} = V_{GS6}+V_{DS1}+V_{R_S}+V_{DS2} = 3.855V
+\end{gather}
+
+
+
+
+
+
 
