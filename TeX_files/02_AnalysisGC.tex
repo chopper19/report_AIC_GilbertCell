@@ -9,12 +9,12 @@ A CMOS-based technology Gilbert cell-based mixer is shown in figure \textbf{AGGI
 	\item Possibility of integration thanks to the CMOS architecture.
 \end{itemize}
 \subsection{Gilbert cell circuit analysis}
-To analyse the circuit it is necessary to give some informations about its topology, polarization and driving. Looking at\textbf{ FIGURA DOVE C'E' MIXER COMPLETO} it is possible to identify five main blocks that are described in what follows.
+To analyse the circuit it is necessary to give some informations about its topology, biasing and driving. Looking at\textbf{ FIGURA DOVE C'E' MIXER COMPLETO} it is possible to identify five main blocks that are described in what follows.
 \paragraph{Bias net}
 
 This net is made up of the current mirror (transistors M1 and M2) and the voltage reference generation branch (transistor M5, R1, R2, R3, R4, R5). 
 
-Transistor M1 is the strong branch of the current mirror and it acts as a current sink for the differential pair made up by M3 and M4, fixing the polarization current for the whole circuit. M2 sinks instead the current from the voltage reference section of the bias net.
+Transistor M1 is the strong branch of the current mirror and it acts as a current sink for the differential pair made up by M3 and M4, fixing the biasing current for the whole circuit. M2 sinks instead the current from the voltage reference section of the bias net.
 Generally transistors in current mirrors are polarized in saturation region, so that an high output resistance is seen from the stage above: this means that M1 should appear as a good current sink.
 Given $V_{G1}=V_{GS1}$ the gate voltage in M1 we have that the transistor remains in saturation if:
 \begin{gather}

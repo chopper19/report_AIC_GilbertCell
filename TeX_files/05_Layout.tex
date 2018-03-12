@@ -1,2 +1,43 @@
 \section{Layout of the Gilbert Cell}
+The overall layout was carried on paying attention to:
+\begin{itemize}
+	\item Reducing technology gradients using common centroid, inter-digitated or multi-finger structures
+	\item Placing components all in the same direction for a uniform error affection
+	\item Reducing border effects with dummy elements
+	\item Minimizing encroachment errors with same-length transistor fingers
+ 	\item Limiting substrate noise with guard rings
+	\item Avoiding connections which could lead to crosstalk
+	\item Minimizing metal changes in the routing process
+	\item Aiming a compact structure
+\end{itemize}
+\subsection{Differential RF stage}
+A strong attention has been paid to the layout of differential pairs like the one of RF stage. Since it's desirable to have a symmetric as possible input stage a common centroid configuration has been employed, following a structure sketched as in figure. \\FIGURA\\
+This minimizes errors due to process gradients in both x and y directions. Dummy elements where also placed next to the four transistors at the edges to guarantee a uniform dopant concentration of the inner transistors. \\FIGURA\\ Drain and source of dummy transistors were tied together and then short circuited to the source.
+The transistor length of the differential pair has been divided tu form multi-finger  transistors such that the whole structure results as square and compact as possible. This was intended again for the scope of reducing gradients and with a glance forward to the compactness of the overall mixer layout. The final layout of differential RF pair is shown in figure. \\FIGURA\\ Drain, source, and ground nets disposal is highlighted in \\FIGURA\\
+\subsection{Differential LO stages}
+The two differential LO stages have been designed paying attention to the same mismatch causes seen for the RF stage. Two common centroid structure were drawn at first. Being the transistor wide, multi-finger structure was employed also here to have an almost-square layout along with dummy elements. Attention has been paid in order that the two LO pairs could be easily stack above the RF stage with the same width. \\(FIGURA??)\\. In second place we opted for a merge of the two common centroid LO layouts in a more compact tiled layout, coming to a gate disposal which could simplify the access to these net from the signal capacitors in the global layout. Final LO layout and highlighted nets are shown in \\FIGURA\\
 
+\subsection{Current mirror and diode connected transistor}
+Current mirror employs an inter-digitated structure similar to the one visible in figure. \\FIGURA\\ Since fingers are all the same size the current ratio is independent from encroachment width. Dummy transistor was included to reduce border effects, and source connections on both top and bottom sides have been added for a small source resistance. The weak side transistor drain has been tied together to the gate with an array of contacts. The final layout for current mirror is visible in \\FIGURA\\, and highlighted nets in figure \\FIGURA\\.
+
+For what concerns diode connected transistor M5, inter-digitated structure was implemented. Dummy transistors ad the two sides and an array of contacts to minimize series resistance between gate and drain. Final layouts and highlighted nets are visible in \\FIGURA\\
+
+\subsection{Capacitors}
+Bias capacitors have been designed using two configurations of common centroid layout.
+\paragraph{Bias capacitors}
+Bias capacitors layout structure is drawn in figure. \\FIGURA\\ Also if no exact ratio between the two capacitors is needed, a modular geometry, made by equal squares, was used. This minimizes undercut effects, and the square shape reduces border errors. In order to reduce area capacitor units were designed using poly1 and poly2(elec) layers, which give the maximum capacitance per unit area between two layers. Dummy capacitor frame was placed around to minimize border effect. All the capacitor was placed in an n-well, the purpose of which is to minimize field leakage. This n-well is tied to \(V_{dd}\) potential. The final layout with highlighted nets is visible in \\FIGURA\\ 
+
+\paragraph{Signal capacitors}
+Since these capacitors resulted to be very large from design steps, a multi-layer capacitor was tried to be built alternating poly and metal layers. Unfortunately this idea was soon abandoned due to the rule 11.6 of SCMOS rules, which does not allow unrelated metal layer over poly2. The most practical solution proven to be using poly1-to-poly2 capacitance in a common centroid structure. This time matching is more important with respect to bias capacitors, because we want signal coming to the differential stages pass through a symmetrical as possible paths.
+The common centroid structure has been implemented, shown in the figure \\FIGURE\\. Since it's an high frequency path to reduce series resistance and inductance metal plates with contacts were placed all over the square unit capacitors. Dummy short circuited elements were positioned all around the capacitor as well. N-well connected to \(V_{dd}\) surrounds the capacitor to reduce field leakage. Overall capacitance layout with highlighted nets is visible in \\FIGURA\\
+
+\subsection{Resistors}
+\paragraph{N-well resistors}
+Resistors fabricated in n-well have worse tolerance, but an higher sheet resistance. That's the way this kind of resistor was chosen to implement biasing resistors \(R_1\) and \(R_3\), which are, as a matter of fact, very large in absolute value, but their tolerance is not too important. We can thus have smaller layout adopting n-well layout. Resistors where split in modular structures placed with the common centroid technique to reduce differences between \(R_1\) and \(R_3\). Due to the fact that this resistors are very close to the mixing stage, a guard ring connected to ground has been included to prevent substrate noise being injected through the biasing network. The final layout obtained for \(R_1\) and \(R_3\) resistor is visible in figure \\FIGURA\\
+
+\paragraph{Poly resistors}
+Since other resistors are smaller than \(R_1\) and \(R_3\), poly has been employed to build them, taking advantage of their higher precision but smaller sheet resistance. All of them were drawn in common centroid structure, except for \(R_4\), and dummy elements on both sides were always used. Final layouts for these resistors are shown in \\FIGURE\\
+
+\subsection{Putting together the layout}
+Layout has been redesigned few times in order to minimize surface area occupied. Final configuration can be seen in \\FIGURE\\. Components have been placed to shorten interconnections, emphasize symmetries for matching and to make paths as equal as possible for high frequency signals.
+Body contacts where placed all around the circuit where possible, and connected to ground. This captures free charges in the substrate reducing substrate noise.

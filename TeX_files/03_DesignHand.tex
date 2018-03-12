@@ -35,7 +35,7 @@ It is necessary to notice that the following calculation is carried on consideri
 
 \subsection{Gilbert cell design flow} 
 
-\paragraph{Current mirror polarization}
+\paragraph{Current mirror bias}
 
 Both M1 and M2 must be in saturation. We choose the same current to flow in the weak and strong branches in order to have equal structures (this aids the circuit symmetry and matching, allowing us to use interdigitated structure). We impose:
 \begin{gather}
@@ -69,7 +69,7 @@ Since the whole differential structure must be symmetrical, current I\textsubscr
 R_L = \frac{\frac{2}{3}V_{DD}}{I_0/2} = 1.33 k\Omega
 \end{equation}
 
-\paragraph{Gain stage polarization}
+\paragraph{Gain stage bias}
 The design of the RF bias begins with the choice of its transconductance, fixed by A\textsubscript{vC}, R\textsubscript{L} and R\textsubscript{S}. We consider M3 and M4 equal and in saturation. The gate length for this stage is set
 \begin{equation}
 	L_3 = L_4 = 3 L_{min} = 1.8 \mu m
@@ -114,7 +114,7 @@ To ensure saturation of M3 and M2 we set:
 	V_{G3}=V_{GS3} +V_{R_{S}}+V_{DS1} = 2.805 V 
 \end{equation}
 
-\paragraph{Mixing stage polarization}
+\paragraph{Mixing stage bias}
 
 Also in this case we require transistors from M6 to M9 to be in saturation (they are equal and biased the same way). We reduce as much as possible the overdrive voltage: in this way the stage is kept nearby the threshold fostering a the commutation of the switches. Having small overdrives we produces large transistors then, to limit this we set:
 \begin{gather}
