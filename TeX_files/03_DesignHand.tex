@@ -7,7 +7,7 @@ The design specifications follow:
 	\item the supply voltage is V\textsubscript{DD}=5V;
 	\item we are design a down-conversion mixer. The analysis will be carried on considering two monochromatic signals f\textsubscript{RF}=110 MHz and f\textsubscript{LO}=100 MHz, producing a wanted baseband signal at f\textsubscript{IF}=10 MHz (the HF component is considered as filtered out);
 	\item all the transistors should work in saturation;
-	\item the conversion gain is chosen accordingly to the previous specification equal to A\textsubscript{vC}=4.
+	\item the conversion gain is chosen accordingly to the previous specification equal to G\textsubscript{vC}=15dB\textsubscript{20}.
 \end{itemize}
 The most important parameters used in the design are reported in the following table: \footnote{MOSFET's parameters are intended at T=27$^\circ$C}
 \begin{table} [h]
@@ -18,6 +18,7 @@ The most important parameters used in the design are reported in the following t
 		\toprule 
 		Parameter Name			& Value 	& Unit \\ 
 		\midrule
+		A\textsubscript{vC} & 5.6 & \\
 		V\textsubscript{DD}		&	5 & V		\\
 		I\textsubscript{0} & 5 & mA \\
 		V\textsubscript{th0}			& 0.709 &V		\\ 
@@ -38,15 +39,15 @@ It is necessary to notice that the following calculation is carried on consideri
 
 Both M1 and M2 must be in saturation. We choose the same current to flow in the weak and strong branches in order to have equal structures (this aids the circuit symmetry and matching, allowing us to use interdigitated structure). We impose:
 \begin{gather}
-I_{D1} = I_{D2} = I_0 = 5 mA \notag \\
-V_{od1}=V_{od2}=0.4 V  \notag \\
-L_1 =3 L_{mim} = 1.8 \mu m \notag
+I_{D1} = I_{D2} = I_0 = 5 mA  \\
+V_{od1}=V_{od2}=0.4 V  \\
+L_1 =3 L_{mim} = 1.8 \mu m 
 \end{gather} 
 The current magnitude is chosen thinking about the mixer used in a transmitter receiving chain, after an hypothetical power stage. The overdrive voltage's value is chose in order to keep turned on the stage even with strong fluctuation of the drain node. However, to have the same current mirrored we must have:
 \begin{gather}
 	V_{GS1} = V_{VGS2} \notag \\
 	V_{DS1} = V_{DS2} \notag \\
-	W_1 = W_2 \notag \\
+	W_1 = W_2 \notag 
 \end{gather}
 suggesting that this kind of current source can work properly only with small signal variation coming from the RF stage. Now, by using \ref{eq:Id_quadLaw}, neglecting channel modulation effects and inverting:
 \begin{equation}
@@ -60,7 +61,7 @@ hence:
 \begin{equation}
 V_{GS2}=V_{DS2}= V_{th0}+\sqrt{\frac{2I_0L_1}{K_n W_1 }} = 1.1 V
 \end{equation}
-
+The design for the voltage reference bias net is reported in section 4.
 \paragraph{Load stage and gain choice}
 As previously stated we chose A\textsubscript{vC}=4. 
 Since the whole differential structure must be symmetrical, current I\textsubscript{0} is evenly split into M3 and M4: this is the same current flowing also into the two loads. In order to give the LO stage \textbf{enough output swing} we impose one third of the supply voltage must drop on the load. Therefore, we can calculate the load resistance's value:
@@ -129,7 +130,7 @@ V_{th6} = 1.18V
 This result does not consider short channel effects, that produces a different threshold dependency on source to bulk voltage. However, considering ideal behaviour we have that the M6 to M9's bias gate voltage is:
 \begin{gather}
 	V_{GS6}=1.326V \\
-	V_{G3} = V_{GS6}+V_{DS1}+V_{R_S}+V_{DS2} = 3.855V
+	V_{G6} = V_{GS6}+V_{DS1}+V_{R_S}+V_{DS2} = 3.855V
 \end{gather}
 
 
