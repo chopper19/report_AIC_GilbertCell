@@ -73,8 +73,8 @@ Extrapolation of 1dB compression point was carried on, leading to the measuremen
 \end{gather}
 then, respectively for schematic and layout, corresponding to the voltages:
 \begin{gather}
-V_{RF,in}|_{layout}=408mV \notag \\
-V_{RF,in}|_{schematic}=335mV \notag
+V_{RF,in}|_{layout}=122.3mV \notag \\
+V_{RF,in}|_{schematic}=149.2mV \notag
 \end{gather}
 
 \subsection{Single tone third order distortion}
@@ -114,24 +114,34 @@ Linear regression was applied to the curves to find the third order intercept po
 	\end{tabular}	
 \end{table}
 \subsection{Two tone IM\textsubscript{3} and CIM\textsubscript{3} ratio}
-In order to simulate the behaviour of a non-monochrome, fixed-bandwidth signal, the two tone analysis has been carried on. Two RF tones at f\textsubscript{RF}=110MHz and f\textsubscript{RF}\textsuperscript{'}=f\textsubscript{RF}+\(\delta\)f=111MHz have been adopted. Third order intermodulation frequency components result to be at \(9Mhz\) and \(12MHz\). Their behaviour along with increasing input power is shown in figure \ref{fig:IIP3_2t_schem}a and \ref{fig:IIP3_2t_schem}b. 
-Graphs show that power related to fundamental is strongly reduced when two tones are injected, since power is equally spread among them. From simulation appears that the IIP\textsubscript{3} is reduced by roughly three dB, accordingly to the doubled power injected due two tones. Once again the layout looks less performing.
+In order to simulate the behaviour of a non-monochrome, fixed-bandwidth signal, the two tone analysis has been carried on. Two RF tones at f\textsubscript{RF}=110MHz and f\textsubscript{RF}\textsuperscript{'}=f\textsubscript{RF}+\(\delta\)f=111MHz have been adopted.
+Figure \ref{fig:1dB_2tones} shows the 1dB compression point in this case.
+Third order intermodulation frequency components result to be at \(9Mhz\) and \(12MHz\). Their behaviour along with increasing input power is shown in figure \ref{fig:IIP3_2t_schem}a and \ref{fig:IIP3_2t_schem}b. 
+Graphs show that power related to fundamental is strongly reduced when two tones are injected, since power is equally spread among them. From simulation appears that the IIP\textsubscript{3} is reduced by roughly three dB, accordingly to the doubled power injected due two tones. Once again the layout looks less performing. Frequency spectra at difference input power is shown in figure \ref{fig:DFT_2ton} and \ref{fig:DFT_2ton_zoom}. From the latter, informations about the carrier to third intermodulation data are selected. In particular, the 1dB compression point spectrum has been chosen (P\textsubscript{RF}=-9.68dB\textsubscript{m}), since this is set as the maximum input power accepted by the multiplier without heavy distortion. As it appears, power carried from fundamental tones (10MHz and 11MHz) barely increases after this point, whereas other tones keep increasing.
 
 \begin{table} [H]
 	\label{tab:IIP3_2tone}
-	\caption{IIP3 and IIP5 in one tone analysis.}
+	\caption{1dB compression point, IIP3 and CIM3 in two tones analysis.}
 	\centering	
 	\begin{tabular}{lccr} 
 		\toprule 
 		Parameter Name			& Schematic 	& Layout & unit \\ 
 		\midrule
+		\(P_{RF,1dB}\) & -8.01 & -9.68 & dB\(_{m}\)\\
 		\(IIP_{3}\)  & 8.42 & 5.06 & dB\(_{m}\) \\
 		\(OIP_{3}\)  & 16.9 &14.4 & dB\(_{m}\) \\
+		\(CIM_{3,1dB}\) & 16.7 & 14.1 & dB \\
 		\bottomrule 
 	\end{tabular}	
 \end{table}
 
-In the frequency domain, shown in figure \\FIGURA\\, the carrier to inter-modulation ratio has been evaluated, corresponding to \\CIM3\\.
+\begin{figure}[H] 
+	\centering
+	\subfloat[][\emph{schematic}]{\includegraphics[scale=.7]{1dB_compression_2tone_schem}} \\
+	\subfloat[][\emph{layout}]{\includegraphics[scale=.7]{1dB_compression_2tone_layout}}
+	\caption{1dB compression point, two tones.}
+	\label{fig:1dB_2tones}
+\end{figure}
 
 \begin{figure}[H] 
 	\centering
@@ -139,6 +149,22 @@ In the frequency domain, shown in figure \\FIGURA\\, the carrier to inter-modula
 	\subfloat[][\emph{layout}]{\includegraphics[scale=.7]{IIP3_layout_2tone}}
 	\caption{Harmonics power, IIP\textsubscript{3} and IIP\textsubscript{5} in schematic, two tone analysis.}
 	\label{fig:IIP3_2t_schem}
+\end{figure}
+
+\begin{figure}[H] 
+	\centering
+	\subfloat[][\emph{schematic}]{\includegraphics[scale=.7]{DFT_2tones_schem}} \\
+	\subfloat[][\emph{layout}]{\includegraphics[scale=.7]{DFT_2tones_layout}}
+	\caption{DFT, comparison between layout and schematic; cosine2 smoothing function.}
+	\label{fig:DFT_2ton}
+\end{figure}
+
+\begin{figure}[H] 
+	\centering
+	\subfloat[][\emph{schematic}]{\includegraphics[scale=.7]{DFT_2tones_schem_zoom}} \\
+	\subfloat[][\emph{layout}]{\includegraphics[scale=.7]{DFT_2tones_layout_zoom}}
+	\caption{DFT, comparison between layout and schematic. CIM\textsubscript{3} measurement at 1dB compression point; cosine2 smoothing function. }
+	\label{fig:DFT_2ton_zoom}
 \end{figure}
 
 
