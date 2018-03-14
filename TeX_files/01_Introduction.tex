@@ -73,45 +73,55 @@ In case of non-monochromatic signals (general case) one defines the \emph{voltag
 \end{equation}
 moreover, one has that the output power is proportional to LO power (that is also called a \emph{pump}), even if this dependency does not appear explicitly.
 
-An important figure of merit concerning mixers is given by the -1dB compression point of the $V_{in}$/$V_{out}$ characteristic. By increasing the value of the RF signal, the amount of harmonics at the output besides the fundamental IF frequency increases as well, eventually saturating the output signals (gain compression or flatness). This is due to the fact that power is no more mainly carried by the fundamental output tone (i.e. the IF tone), but it is rather shared by all the growing up harmonics. In other words the conversion gain stops to be constant, reduces and the output waveform is clipped. Supposing to have input and output impedance matching one has that:
+An important figure of merit concerning mixers is given by the -1dB compression point of the $P_{in}$/$P_{out}$ characteristic. By increasing the value of the RF signal, the amount of harmonics at the output besides the fundamental IF frequency increases as well, eventually saturating the output signals (gain compression or flatness). This is due to the fact that power is no more mainly carried by the fundamental output tone (i.e. the IF tone), but it is rather shared by all the growing up harmonics. In other words the conversion gain stops to be constant, reduces and the output waveform is clipped. Supposing to have input and output impedance matching one has that:
 \begin{align}
-	A_{v,conv}&=\frac{V_{IF}}{V_{RF}} \notag \\
-	20\log_{10}A_{v,conv} & = 20\log_{10}\frac{V_{IF}}{V_{RF}}  \notag \\
-	20\log_{10}V_{IF} & = 20\log_{10}A_{v,conv} + 20\log_{10}V_{RF} \notag \\	V_{IF}|_{dB20} &= A_{v,conv}|_{dB20} + V_{RF}|_{dB20} \notag
+	A_{conv}&=\frac{P_{IF}}{P_{RF}} \notag \\
+	10\log_{10}A_{conv} & = 10\log_{10}\frac{P_{IF}}{P_{RF}}  \notag \\
+	10\log_{10}P_{IF} & = 10\log_{10}A_{conv} + 10\log_{10}P_{RF} \notag \\	P_{IF}|_{dB_{m}} &= A_{conv}|_{dB} + P_{RF}|_{dB_{m}}+30dB \notag
 \end{align}
 This suggests both that the ideal output characteristic looks linear in log scale until the gain does not compress and that the -1dB compression point can be defined as the output IF voltage at which:
 \begin{equation}
-V_{IF}|_{-1dB} = A_{v,conv}|_{dB20} + V_{RF}|_{dB20} -1dB \notag
+P_{IF}|_{-1dB} = A_{conv}|_{dB} + P_{RF}|_{dBm} -1dB \notag
 \end{equation}
 hence:
 \begin{equation}
-V_{IF}|_{-1dB} = V_{IF}|_{dB20,ideal} -1dB \notag
+P_{IF}|_{-1dB} = P_{IF}|_{dB_{m},ideal} -1dB \notag
 \end{equation}
 
-Another figure of merit concerns the third order distortions, that can be defined in two condition:
+Other figures of merit, that play the most important role in defining the 1dB compression point, concern the third order distortions, that can be defined as follow:
 \begin{description}
-	\item [Third Order Distortion] in this case the input is a monochromatic signal. Due to intrinsic non-linearity of the device the output contains frequency components not present at the input. It can be demonstrated that the most important spurious contribution on output fundamental tone comes from the third order term, in fact:
-	\begin{equation}
-	I_{D,TOD} \propto \cos^3(\omega_0 t) = \frac{1}{2}\cos(\omega_0 t)+\frac{1}{2}cos(\omega_0 t)\cos(2\omega_0 t) \notag
-	\end{equation} 
-	this presents in-band contribution, moreover the 1dB compression point mainly depends on TOD, then having good linearity is important to reduce this effect.
+	\item [Third Order Distortion] In this case the input is a monochromatic signal. Because of the intrinsic device's non-linearity, the output signal contains frequency components not present at the input. It can be demonstrated that the most important spurious contribution on output fundamental tone comes from the third order term, in fact, by expanding the device's output current in Taylor's series and supposing a monochromatic gate signal, one has:
+	\begin{align}
+		i_D(t) &= I_D|_{V_{GS}}+av_{gs}(t)+bv_{gs}^2(t)+cv_{gs}^3(t)+\dots \notag \\
+		&=I_D|_{V_{GS}}+i_{D,fund}(t)+i_{D,SOD}(t)+	i_{D,TOD}(t)+\dots
+	\end{align}
+	Where a$>$b$>$c, meaning that increasing input signal strength each element will be more important. Developing the first three terms of the series expansion one has:
+	\begin{align}
+	&i_{D,fund}(t) \propto a\cos(\omega_0 t) \\
+	&i_{D,SOD}(t) \propto b\cos^2(\omega_0 t) =\frac{1}{2}b+\frac{1}{2}b\cos(2\omega_0 t) \\
+	&i_{D,TOD}(t) \propto c\cos^3(\omega_0 t) = \frac{3}{4}c\cos(\omega_0 t) +\frac{1}{4}c\cos(3\omega_0 t)
+	\end{align} 
+	It is straightforward that the third order term yields an additive contribution exactly at the fundamental tone, whereas the second order distortion adds a zero-frequency term that is not damaging (a balanced configuration can reject this signal part). In general, even order distortions (2\textsuperscript{nd}, 4\textsuperscript{th} \dots) contributes in corrupt the output signals as well, they are less important though. Also 5\textsuperscript{th} order distortion exist, for which the same reasonings hold. Since the whole signal is mixed, all the additional tones introduced by distortion are converted and they may produce in-band spurious components.
 	
-	\item [Third Order Intermodulation] this distortion comes from a two-tone input injection ($f_1 = f_0$ and $f_2=f_0+\delta f$). Due to intermodulation between tones, spurious frequencies are generated. The most important contribution comes from the third order intermodulation (IM3): $|m|+|n|=3$ and $mn<0$ (where $m=\pm2,\pm1$ and $n=\pm2,\pm1$ are the intermodulation indexes). Taking $m=2$ and $n=-1$:
+	\item [Third Order Intermodulation, CIM\textsubscript{3}] This distortion comes from a two-tone input injection ($f_1 = f_0$ and $f_2=f_0+\delta f$). Due to intermodulation between tones, spurious frequencies are generated. The most important contribution comes from the third order intermodulation (IM3): $|m|+|n|=3$ and $mn<0$ (where $m=\pm2,\pm1$ and $n=\pm2,\pm1$ are the intermodulation indexes). Taking $m=2$ and $n=-1$:
 	\begin{equation}
-		f_{IM3}|_{m=2,n=-1} = 2f_1-f_2 = f_0 - \delta f \notag
+		f_{IM3}|_{m=2,n=1} =  2f_1 - f_2 = f_0 - \delta f \notag
 	\end{equation}
 	that is clearly an in-band distortion.
 	It can be demonstrated (FONTE) that, in case of same input and output reference impedance, the out and in intermodulation points are related to stage gain and output power of first harmonic:
 	\begin{gather}
 	OIP_3|_{dB} = \frac{3}{2}P_{out,1st}|_{dB}-\frac{1}{2}P_{out,IM3}|_{dB} \notag \\
-	IIP_3|_{dB} = OIP_3|_{dB}-A_v,1st|_{dB} \notag
+	IIP_3|_{dB} = OIP_3|_{dB}-A_{v,1st}|_{dB} \notag
 	\end{gather} 
-	In case of mixing we change frequency band between input and output, but the previous result holds:
+	By taking $m=-1$ and $n=2$ one has instead:
+	\begin{equation}
+	f_{IM3}|_{m=-1,n=2} =  -f_1 +2 f_2 = f_0 + \delta f \notag
+	\end{equation} 
+	We notice that the whole spectrum presents side-bands produced by intermodulation. This phenomenon is called \emph{spectra regrowth} and it can be quantified by the \emph{Carrier to Intermodulation Ratio}.
+	In case of mixing we change frequency band from input to output, anyway the previous result holds:
 	\begin{gather}
 			f_{IF,IM3}|_{m=2,n=-1} = 2f_{RF1} - f_{RF2} -f_{LO}= f_{IF} - \delta f \notag
 	\end{gather}
 \end{description}
-
-Also 5\textsuperscript{th} order distortion exist, the same reasonings hold. Even order distortions (2\textsuperscript{nd}, 4\textsuperscript{th} \dots) contributes in corrupt the output signals, as we will present further they are not very important though.
 
 \textbf{DA FINIRE CON FIGURE DI MERITO}

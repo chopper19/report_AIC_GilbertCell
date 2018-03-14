@@ -1,18 +1,110 @@
 \section{Analysis of a Gilbert cell-based multiplier }
 
 \subsection{Gilbert cell overview}
-A CMOS-based technology Gilbert cell-based mixer is shown in figure \textbf{AGGIUNGI IMMAGINE}. This circuit exploits a differential topology to implement a double-balanced cell, providing:
+\begin{figure}[H]
+	\centering
+	\begin{circuitikz}
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		\ctikzset{bipoles/capacitor/height=0.5}
+		\ctikzset{bipoles/capacitor/width=0.1}
+		%drawing MOS
+		\draw (0,0) to[Tnmos,n=M1] (0,2)
+		(M1.source) node[right=3mm, above=3mm]{$M1$};
+		\draw (M1.gate) to[short,-*] (-1,1);
+		
+		\draw (0,2) -- (-2,2)
+		to[Tnmos,n=M3] (-2,4)
+		(M3.source) node[right=3mm, above=3mm]{$M3$};
+		
+		\draw (0,2) -- (2,2) to[Tnmos,mirror,n=M4] (2,4)
+		(M4.source) node[left=3mm, above=3mm]{$M4$};
+		
+		\draw (-2,4) -- (-3,4)
+		to[Tnmos,n=M6] (-3,5.5)
+		(M6.source) node[right=3mm, above=3mm]{$M6$};
+		
+		\draw (-2,4) -- (-1,4) to[Tnmos,mirror,n=M7] (-1,5.5)
+		(M7.source) node[left=3mm, above=3mm]{$M7$};
+		
+		\draw (2,4) -- (1,4) to[Tnmos,n=M8] (1,5.5)
+		(M8.source) node[right=3mm, above=3mm]{$M8$};
+		
+		\draw (2,4) -- (3,4) to[Tnmos,mirror,n=M9] (3,5.5)
+		(M9.source) node[left=3mm, above=3mm]{$M9$};
+		
+		%drawing VLO-
+		\draw (M7.gate) -- (M8.gate);
+		\draw (M7.gate) -| (0,4.5);
+		\draw (0,4.5) to[C=$C_{signal}$] (0,3) to[short,-*] (0,3) node[below]{$V_{LO}-$};
+		
+		%drawing RL and out connections
+		\draw (M6.drain) -- (-3,6) to[R=$R_L$,n=RL1] (-3,7) -- (-3,7.5);
+		\draw (M9.drain) --(3,6) to[R=$R_L$,n=RL2] (3,7) -- (3,7.5);
+		\draw (-1,5.5) -- (3,6);
+		\draw (1,5.5) -- (-3,6);
+		
+		%Vdd and ground
+		\draw (-3,7.5) node[above=3mm,right=3cm]{$V_{dd}$} -- (3,7.5);
+		\draw (M1.source) -- (0,0) node[sground]{};
+		
+		% VLO+-
+		\draw (M6.gate) -| (-4,4.75) to[short,-*] (-4,4.75) node[left]{to $G9$};
+		%-| (-4,4.7) to[short,-*] (-4,3) node[left]{to $G_9$};
+		\draw (M9.gate) -| (4,4.7) to[C=$C_{signal}$] (4,3) to[short,-*] (4,3) node[below]{$V_{LO}+$};
+		
+		% VRF+-
+		\draw (M3.gate) -| (-3,2) to[C, l_=$C_{signal}$] (-3,1) to[short,-*] (-3,0.5) node[left]{$V_{RF}+$};
+		\draw (M4.gate) -| (3,2) to[C, l_=$C_{signal}$] (3,1) to[short,-*] (3,0.5) node[left]{$V_{RF}-$};
+		%\draw (M4.gate) -- (3,3) to[short,-*] (3,3) node[right]{$V_{RF}-$};
+		
+		%Out nodes
+		\draw (-3, 6) to[short,*-*] (-4, 6) node[left]{$V_{out}+$};
+		\draw (3, 6) to[short,*-*] (4, 6)node[right]{$V_{out}-$};
+	\end{circuitikz}
+	\caption{Gilbert cell mixer}
+	\label{fig:GilbetCell}
+\end{figure}
+A CMOS-based technology Gilbert cell-based mixer is shown in figure \ref{fig:GilbetCell}, whereas the biasing network can be found in figure \ref{fig:biasNet}. This circuit exploits a differential topology to implement a double-balanced cell, providing:
 \begin{itemize}
 	\item Reasonable conversion gain (from one to some tens);
-	\item Good rejection of input frequency components to the output port along with high linearity, thanks to the double-balanced topology if performs ;\footnote{The linearity is meant with respect to the conversion gain.}
+	\item Good input frequency rejection components to the output port along with high linearity, thanks to the double-balanced topology if performs;\footnote{The linearity is meant with respect to the conversion gain.}
 	\item Good isolation between ports is provided by the high suppression of spurious frequency components;
 	\item Possibility of integration thanks to the CMOS architecture.
 \end{itemize}
+\begin{figure} [H]
+	\centering
+	\begin{circuitikz}
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		\ctikzset{bipoles/capacitor/height=0.5}
+		\ctikzset{bipoles/capacitor/width=0.1}
+		%M2
+		\draw (0,0) to[Tnmos,mirror,n=M2] (0,2);
+		\draw (M2.source) node[left=3mm,above=3mm]{$M2$};
+		\draw (M2.gate)[right] |- (M2.drain);
+		\draw (M2.gate) to[short,-*] (2.5,1) node[right]{to $G_1$};
+		\draw (M2.source) to[short] (0,0) node[sground]{};
+		\draw (0,2) -- (-2,2) to[C=$C_{bias}$] (-2,1) node[sground]{};
+		%M5
+		\draw (M2.drain) to[Tnmos,mirror,n=M5] (0,4.5);
+		\draw (M5.source) node[left=3mm,above=3mm]{$M5$};
+		\draw (M5.gate)[right] |- (M5.drain);
+		\draw (0,4) -- (-2,4) to[C=$C_{bias}$] (-2,3) node[sground]{};
+		\draw (M5.gate) to[R, l_=$R_1$] (2,2.3) to[short,-*] (2.5,2.3) node[right]{to $G_3$};
+		\draw (M5.gate) to[R=$R_1$] (2,3.7) to[short,-*] (2.5,3.7) node[right]{to $G_4$};
+		%R2 R4
+		\draw (M5.drain) to[R=$R_2$,n=R2] (0,6.3) to[R=$R_4$] (0,7.1) to[short,-*] (0,7.5) node[above]{$V_{dd}$};
+		\draw (0,5.7) to[short] (0.7,5.7) to[R,l_=$R_3$] (2,5) to[short,-*] (2.5,5) node[right]{to $G_6$,$G_9$};
+		\draw (0,5.7) to[short] (0.7,5.7) to[R=$R_3$] (2,6.4) to[short,-*] (2.5,6.4) node[right]{to $G_7$,$G_8$};
+	\end{circuitikz}
+	\caption{Biasing network}
+	\label{fig:biasNet}
+\end{figure}
+
 \subsection{Gilbert cell circuit analysis}
-To analyse the circuit it is necessary to give some informations about its topology, biasing and driving. Looking at\textbf{ FIGURA DOVE C'E' MIXER COMPLETO} it is possible to identify five main blocks that are described in what follows.
+To analyse the circuit it is necessary to give some informations about its topology, biasing and driving. Looking at figure \ref{fig:GilbetCell} and \ref{fig:biasNet} it is possible to identify five main blocks that are described in what follows.
 \paragraph{Bias net}
 
-This net is made up of the current mirror (transistors M1 and M2) and the voltage reference generation branch (transistor M5, R1, R2, R3, R4, R5). 
+This net is made up of the current mirror (transistors M1 and M2, figure \ref{fig:CurrentMirror}) and the voltage reference generation branch (transistor M5, R1, R2, R3, R4, R5; figure \ref{fig:biasNet}). 
 
 Transistor M1 is the strong branch of the current mirror and it acts as a current sink for the differential pair made up by M3 and M4, fixing the biasing current for the whole circuit. M2 sinks instead the current from the voltage reference section of the bias net.
 Generally transistors in current mirrors are polarized in saturation region, so that an high output resistance is seen from the stage above: this means that M1 should appear as a good current sink.
@@ -22,6 +114,32 @@ Given $V_{G1}=V_{GS1}$ the gate voltage in M1 we have that the transistor remain
 V_{GS}\geq V_{th}  \\
 V_{DS}>V_{od} = V_{GS}-V_{th} 
 \end{gather}
+
+\begin{figure}[H]
+	\centering
+		\begin{circuitikz}
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		\ctikzset{bipoles/capacitor/height=0.5}
+		\ctikzset{bipoles/capacitor/width=0.1}
+		%M2
+		\draw (-2,0) to[Tnmos,mirror,n=M2] (-2,1.5);
+		\draw (-2,3) to[I=$I_{ref}$] (M2.drain);
+		\draw (M2.source) node[sground]{};
+		\draw (M2.source) node[left=3mm, above=3mm]{$M2$};
+		%M1
+		\draw (1,0) to[Tnmos,n=M1] (1,1.5);
+		\draw (M1.source) node[sground]{};
+		\draw (M1.gate) -- (M2.gate) |- (M2.drain);
+		%Current short
+		\draw (1,3) to[short,i>=$I_0$] (M1.drain);
+		\draw (M1.source) node[right=3mm, above=3mm]{$M1$};
+		\draw (1.5,0) to[open, v=$V_{DS1}$] (1.5,1.5);
+		\draw (M1.source) to[open,v^=$V_{GS1}$] (M1.gate);
+	\end{circuitikz}
+	\caption{Current mirror}
+	\label{fig:CurrentMirror}
+\end{figure}
+
 The same holds for M2, that is always in saturation condition since it is diode connected (provided \ref{eq:sat_m1}). In saturation (neglecting channel modulation effects), one has that the drain current only depends on gate voltage and it is given by:
 \begin{equation}
 \label{eq:Id_quadLaw}
@@ -81,13 +199,33 @@ A cascaded voltage divider is connected as M2's load:
 Noise issues will not be analysed within this treatise,even if it should be considered for a more complete design though. As a rule of thumb, narrow gate and low overdrive voltages should used to lower noise contribution.(FONTE) 
 Using a resistive voltage reference can be detrimental in case of voltage supply fluctuation, since a resistive voltage divider cannot reject current variations. However using active devices we would produce much more noise injection within the net though.
 
+\begin{figure}[H]
+	\centering
+	\begin{circuitikz}
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		%I_0 and RS
+		\draw (0,0) to[short,i<=$I_0$] (0,1);
+		\draw (0,1) to[R,l_=$R_S$] (-1,1) -| (-1.5,1.5) to[Tnmos,n=M3] (-1.5,2) to[twoport,l=$LO_{stage}$] (-1.5,4);
+		\draw (M3.source) node[right=3mm, above=3mm]{$M3$};
+		\draw (0,1) to[R,l=$R_S$] (1,1) -| (1.5,1.5) to[Tnmos,n=M4,mirror] (1.5,2) to[twoport,l=$LO_{stage}$] (1.5,4);
+		\draw (M4.source) node[left=3mm, above=3mm]{$M4$};
+		\draw (M3.gate) -| (-2.5,1.7) to[short,-*] (-2.5,1.75) node[below]{$V_{in1}$};
+		\draw (M4.gate) -| (2.5,1.7) to[short,-*] (2.5,1.75) node[below]{$V_{in2}$};
+		%Vx Vy
+		\draw (M3.drain) -| (-1,2.3) to[short,-*] (-1,2.3) node[right]{$V_x$};
+		\draw (M4.drain) -| (1,2.3) to[short,-*] (1,2.3) node[left]{$V_x$};
+	\end{circuitikz}
+	\caption{Gain stage.}
+	\label{fig:GainStage}
+\end{figure}
+
 \paragraph{Gain stage}
 
-The gain stage (shown in figure 3) is the linear part of the mixer, it must handle without distortion and corruptions the power coming from the RF signal giving some amplification. The topology is suited for a low noise amplifying purpose (FONTE): a differential stage with source degeneration. The stage is made up of two transistors (M3 and M4) in common source configuration, polarized with current by M1, and two source degeneration resistances $R_S$.
+The gain stage (shown in figure \ref{fig:GainStage}) is the linear part of the mixer, it must handle without distortion and corruptions the power coming from the RF signal giving some amplification. The topology is suited for a low noise amplifying purpose (FONTE): a differential stage with source degeneration. The stage is made up of two transistors (M3 and M4) in common source configuration, polarized with current by M1, and two source degeneration resistances $R_S$.
 
 The RF differential signal modulates the current flowing into each of the two transistors, that have to be polarized in saturation region. For both of them it must be ensured an high output voltage range and a quite low overdrive voltage, along with a large drain-to-source bias voltage (required to maintain the stage in saturation during the swing of the LO stage).
 
-To have an idea on the gain that can be obtained by this stage, one can look at the stage in FIGURE 3. Removing the degeneration resistances one has that the gate-to-gate mesh gives:
+To have an idea on the gain that can be obtained by this stage, one can look at the stage in figure \ref{fig:GainStage}. Removing the degeneration resistances one has that the gate-to-gate mesh gives:
 \begin{equation}
 V_{in,1}-V_{in,2} = V_{GS3}-V_{GS4} \notag
 \end{equation} 
@@ -106,7 +244,7 @@ Writing the previous equation in term of $\Delta I =I_{1}-I_{2} $ and $\Delta V_
 \end{equation}
 This suggest that it is better to polarize the stage exactly with  $V_{GS1}=V_{GS2}$. The complete expression for equation \ref{eq_statiGain} also gives that the differential transconductance is a strongly non-linear function of the gate bias voltage. 
 
-As we said before there it is the possibility to have mismatch between the transistors and the loads due to circuit dimensions, temperature distribution and process tolerances. Then, looking at FIGURE 3, $M3 \neq M4$ and $R1 \neq R2$. It can be demonstrated that the offset output voltage due to differences in the circuit parameters and dimensions is:
+As we said before there it is the possibility to have mismatch between the transistors and the loads due to circuit dimensions, temperature distribution and process tolerances. Then, looking at figure \ref{fig:GainStage}, $M3 \neq M4$ and $R_1 \neq R_2$ (where input resistance of the LO stage). It can be demonstrated that the offset output voltage due to differences in the circuit parameters and dimensions is:
 \begin{equation}
 V_{o,offset}= \Delta V{th}+\frac{V_{GS}-V_{th}}{2}\Bigg(-\frac{\delta R}{2R}\frac{\Delta W /L}{2W/L}\Bigg) \notag
 \end{equation}
@@ -128,7 +266,45 @@ V_{th} = V_{th0}+\gamma_B\big(\sqrt{2\phi_P + V_{SB}}-\sqrt{2\phi_P}\big)
 This equation holds for all the transistors in the circuit, other than in current mirror.
 
 \paragraph{Mixing stage}
-This stage is also called \emph{switching stage}, suggesting the way we want to drive transistors M6 to M9 (FIGURE 4). Also this one has a differential topology, however, differently from the RF stage, we drive each pair with complementary LO signals that turn on and off cycle-by-cycle one of the two devices. The driving signal il sinusoidal (similarly one can apply a square wave) and it must be large enough to ensure the abrupt switching of the stage: when a device is on it must be in saturation (not in  triode! These are actually \emph{switch-like} transistors), while the other one must be completely of, interdicted.
+This stage is also called \emph{switching stage}, suggesting the way we want to drive transistors M6 to M9 (figure \ref{fig:MixStage}. Also this one has a differential topology, however, differently from the RF stage, we drive each pair with complementary LO signals that turn on and off cycle-by-cycle one of the two devices. A sinusoidal signal il applied to the gates (similarly one can apply a square wave), large enough to ensure the abrupt switching of the stage: when a device is on it must be in saturation (not in  triode! These are actually \emph{switch-like} transistors), while the other one must be completely of, interdicted.
+
+\begin{figure} [H]
+	\centering
+	\begin{circuitikz}
+		\draw (-2,4) -- (-3,4)
+		to[Tnmos,n=M6] (-3,5.5)
+		(M6.source) node[right=3mm, above=5mm]{$M6$};
+		
+		\draw (-2,4) -- (-1,4) to[Tnmos,mirror,n=M7] (-1,5.5)
+		(M7.source) node[left=3mm, above=5mm]{$M7$};
+		
+		\draw (2,4) -- (1,4) to[Tnmos,n=M8] (1,5.5)
+		(M8.source) node[right=3mm, above=5mm]{$M8$};
+		
+		\draw (2,4) -- (3,4) to[Tnmos,mirror,n=M9] (3,5.5)
+		(M9.source) node[left=3mm, above=5mm]{$M9$};
+		
+		%drawing VLO-
+		\draw (M7.gate) -- (M8.gate);
+		\draw (M7.gate) -| (0,4.5);
+		\draw (0,4.5) to[short,-*] (0,3) node[below]{$V_{LO}-$};
+		
+		%Out nodes
+		\draw (-3, 6) to[short,*-*] (-4, 6) node[left]{$V_{out}+$};
+		\draw (3, 6) to[short,*-*] (4, 6)node[right]{$V_{out}-$};
+		\draw (M6.drain) to[short] (-3,7);
+		\draw (M6.gate) -| (-4,3) to[short,-*] (-4,3) node[below]{$V_{LO}+$};
+		\draw (M7.drain) -- (3,6);
+		\draw (M8.drain) -- (-3,6);
+		\draw (M9.drain) to[short] (3,7);
+		\draw (M9.gate) -| (4,3) to[short,-*] (4,3) node[below]{$V_{LO}+$};
+		\draw (-2,3) -- (-2,4)
+		(2,3) -- (2,4);
+	\end{circuitikz}
+	\caption{Mixing stage}
+	\label{fig:MixStage}
+\end{figure}
+
 A compromise is needed since:
 \begin{itemize}
 	\item small amplitude of LO signals produce slower switching speed, hence part of the power is wasted as common mode signal at the output;
@@ -160,11 +336,10 @@ that is neither dependent on the bias of the stage nor on the actual device tran
 \paragraph{Load stage} 
 The load stage is formed by two resistors R\textsubscript{L} whose role is to give the stage enough gain and to set the output bias voltage through the RF drain current. They must be as matched as possible to make the differential outputs of the Gilbert cell equals.
 
-
 \subsection{Mathematical analysis: conversion gain}
 
 As already stated a mixer is a non-linear time variant system, hence a descriptive approach based on the behaviour of the cell is well suited to find the conversion gain of the cell.\footnote{It is not possible to use neither the superposition of effect nor the Laplace transform to compute the gain due to the presence of the switching pairs.} 
-The following analysis is based on the schematic in \textbf{FIGURE 6}.
+The following analysis is based on the schematic in figure \ref{fig:GCmath}.
 
 We suppose all the transistors in gain stage and bias in saturation, then we identify:
 \begin{itemize}
@@ -173,6 +348,76 @@ We suppose all the transistors in gain stage and bias in saturation, then we ide
 	\item i\textsubscript{8} and i\textsubscript{9} the current through M8 and M9;
 	\item i\textsubscript{o1} the current through R\textsubscript{L1};
 	\item i\textsubscript{o2} the current through R\textsubscript{L2};
+	
+	\begin{figure}[H]
+		\centering
+		\begin{circuitikz}
+			\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+			\ctikzset{bipoles/capacitor/height=0.5}
+			\ctikzset{bipoles/capacitor/width=0.1}
+			%drawing MOS
+			\draw (0,0) to[Tnmos,n=M1] (0,1.6) to[short,i<=$I_0$] (0,1.7) -- (0,2)
+			(M1.source) node[right=3mm, above=3mm]{$M1$};
+			\draw (M1.gate) -| (-1,0.8) to[short,-*] (-1,0.8);
+			
+			\draw (0,2) -- (-2,2)
+			to[Tnmos,n=M3] (-2,3.3) to[short,i<=$i_3$] (-2,4)
+			(M3.source) node[right=3mm, above=3mm]{$M3$};
+			
+			\draw (0,2) -- (2,2) 
+			to[Tnmos,mirror,n=M4] (2,3.3) to[short,i<=$i_4$] (2,4)
+			(M4.source) node[left=3mm, above=3mm]{$M4$};
+			
+			\draw (-2,4) -- (-3,4)
+			to[Tnmos,n=M6] (-3,5.5)
+			(M6.source) node[right=3mm, above=3mm]{$M6$};
+			
+			\draw (-2,4) -- (-1,4) to[Tnmos,mirror,n=M7] (-1,5.5)
+			(M7.source) node[left=3mm, above=3mm]{$M7$};
+			
+			\draw (2,4) -- (1,4) to[Tnmos,n=M8] (1,5.5)
+			(M8.source) node[right=3mm, above=3mm]{$M8$};
+			
+			\draw (2,4) -- (3,4) to[Tnmos,mirror,n=M9] (3,5.5)
+			(M9.source) node[left=3mm, above=3mm]{$M9$};
+			
+			%drawing VLO-
+			\draw (M7.gate) -- (M8.gate);
+			\draw (M7.gate) -| (0,4.5);
+			\draw (0,4.5) to[C=$C_{signal}$] (0,3) to[short,-*] (0,3) node[below]{$v_{LO}-$};
+			
+			%drawing RL and out connections
+			\draw (M6.drain) to[short,i<=$i_6$] (-3,6) to[short,i^<=$i_{01}$] (-3,6.8) to[short] (-3,7) to[R=$R_L$,n=RL1] (-3,8) -- (-3,8.3);
+			\draw (M7.drain) to[short,i<=$i_7$] (-1,5.8) to[short,i<=$i_{02}$] (-1,6.8) to[short] (-1,7)to[R,l_=$R_L$,n=RL2] (-1,8) -- (-1,8.3);
+			\draw (-1,6) to[short,i>=$i_9$] (1,5.75) -- (3,5.5);
+			\draw (-3,6) to[short,i_>=$i_8$](-1,5.75) -- (1,5.5);
+			
+			%VO diff
+			\draw (-1,6.8) to[short,-o] (-1.3,6.8);
+			\draw (-3,6.8) to[short,-o] (-2.7,6.8);
+			\draw (-1.3,6.8) to[open,v=$v_{od}$] (-2.6,6.8);
+			%Vdd and ground
+			\draw (-3,8.3) node[above=2mm,right=6mm]{$V_{dd}$} -- (-1,8.3);
+			\draw (M1.source) -- (0,0) node[sground]{};
+			
+			% VLO+-
+			\draw (M6.gate) -| (-4,4.75) to[short,-*] (-4,4.75) node[left]{to $G9$};
+			%-| (-4,4.7) to[short,-*] (-4,3) node[left]{to $G_9$};
+			\draw (M9.gate) -| (4,4.7) to[C=$C_{signal}$] (4,3) to[short,-*] (4,3) node[below]{$v_{LO}+$};
+			
+			% VRF+-
+			\draw (M3.gate) -| (-3,2) to[C, l_=$C_{signal}$] (-3,1) to[short,-*] (-3,0.5) node[left]{$v_{RF}+$};
+			\draw (M4.gate) -| (3,2) to[C, l_=$C_{signal}$] (3,1) to[short,-*] (3,0.5) node[left]{$v_{RF}-$};
+			%\draw (M4.gate) -- (3,3) to[short,-*] (3,3) node[right]{$V_{RF}-$};
+			
+			%Out nodes
+			%\draw (-3, 6) to[short,*-*] (-4, 6) node[left]{$V_{out}+$};
+			%\draw (-1, 6) to[short,*-*] (0, 6)node[right]{$V_{out}-$};
+		\end{circuitikz}
+		\caption{Gilbert cell, to be use as a reference for the mathematical analysis}
+		\label{fig:GCmath}
+	\end{figure}
+	
 	\item I\textsubscript{D} the bias current;
 	\item i\textsubscript{od} the output differential bias current;
 	\item $S(t)=\frac{1}{2}-\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t)$ is the switching function of the mixing cell (then we consider the LO stage as it was made up of ideal switches).
@@ -227,7 +472,13 @@ S(t-T_{LO}/2) &=\frac{1}{2}-\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\si
 & =1- \frac{1}{2}+\frac{2}{\pi} \sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
 &= 1 - S(t)
 \end{align}
-and substituting equation \ref{eq_SwitchingEquality} in \ref{eq_Iod1}\footnote{$cos(x)sin(y)=\frac{1}{2}sin(x+y)+\frac{1}{2}sin(x-y)$} we get:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.6]{ideal_WF}
+	\caption{Ideal signal modulation within Gilbert cell.}
+	\label{ideal_WF}
+\end{figure}
+and substituting equation \ref{eq_SwitchingEquality} in \ref{eq_Iod1} we get:\footnote{$cos(x)sin(y)=\frac{1}{2}sin(x+y)+\frac{1}{2}sin(x-y)$}
 \begin{align}
 \label{eq_Iod2}
 i_{od}(t) &= -\frac{8i_d(t)}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega_{LO} t) \notag \\
@@ -235,7 +486,7 @@ i_{od}(t) &= -\frac{8i_d(t)}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\sin(n\omega
 &= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{n}\cos(\omega_{RF}t)\sin(n\omega_{LO} t) \notag \\
 &= -\frac{8I_{RF}}{\pi}\sum_{n=1,3,5 \dots}^{} \frac{1}{2n}\Big\{ \sin[(\omega_{RF}+n\omega_{LO})t]+\sin[(\omega_{RF}-n\omega_{LO}) t]\Big\}
 \end{align}
-Considering only the fundamental tone of the LO signal (other frequency terms are out-of-band with respect to IF) and multiplying by $R_L=R_{L1}=R_{L2}$ one finds that the differential output voltage is given by:
+The full ideal output differential signal is shown in figure \ref{ideal_WF}. Considering only the fundamental tone of the LO signal (other frequency terms are out-of-band with respect to IF) and multiplying by $R_L=R_{L1}=R_{L2}$ one finds that the differential output voltage is given by:
 \begin{align}
 v_{od}(t)& = -\frac{4I_{RF}R_L}{\pi}\{\sin[(\omega_{RF}+\omega_{LO}) t]+\sin[(\omega_{RF}-\omega_{LO}) t]\} \notag \\
 & = -\frac{4I_{RF}R_L}{\pi}[\sin(\omega_{HF} t)+\sin(\omega_{IF} t)]
