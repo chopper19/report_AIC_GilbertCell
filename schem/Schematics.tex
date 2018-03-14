@@ -1,0 +1,245 @@
+% !TeX spellcheck = en_GB
+\documentclass[]{report}
+%\usepackage{showframe}
+\usepackage{a4wide}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{cancel}
+\usepackage{gensymb}
+\usepackage[utf8]{inputenc}
+\usepackage{xstring}
+\usepackage[]{circuitikz}
+\usepackage{subcaption}
+\begin{document}
+
+	 \begin{figure}
+	 	\begin{subfigure}[t]{0.4\textwidth}
+	 			\begin{circuitikz}
+	 				\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+	 				\ctikzset{bipoles/capacitor/height=0.5}
+	 				\ctikzset{bipoles/capacitor/width=0.1}
+	 				%M2
+	 				\draw (0,0) to[Tnmos,mirror,n=M2] (0,2);
+	 				\draw (M2.source) node[left=3mm,above=3mm]{$M2$};
+	 				\draw (M2.gate)[right] |- (M2.drain);
+	 				\draw (M2.gate) to[short,-*] (2.5,1) node[right]{to $G_1$};
+	 				\draw (M2.source) to[short] (0,0) node[sground]{};
+	 				\draw (0,2) -- (-2,2) to[C=$C_{bias}$] (-2,1) node[sground]{};
+	 				%M5
+	 				\draw (M2.drain) to[Tnmos,mirror,n=M5] (0,4.5);
+	 				\draw (M5.source) node[left=3mm,above=3mm]{$M5$};
+	 				\draw (M5.gate)[right] |- (M5.drain);
+	 				\draw (0,4) -- (-2,4) to[C=$C_{bias}$] (-2,3) node[sground]{};
+	 				\draw (M5.gate) to[R, l_=$R_1$] (2,2.3) to[short,-*] (2.5,2.3) node[right]{to $G_3$};
+	 				\draw (M5.gate) to[R=$R_1$] (2,3.7) to[short,-*] (2.5,3.7) node[right]{to $G_4$};
+	 				%R2 R4
+	 				\draw (M5.drain) to[R=$R_2$,n=R2] (0,6.3) to[R=$R_4$] (0,7.1) to[short,-*] (0,7.5) node[above]{$V_{dd}$};
+	 				\draw (0,5.7) to[short] (0.7,5.7) to[R,l_=$R_3$] (2,5) to[short,-*] (2.5,5) node[right]{to $G_6$,$G_9$};
+	 				\draw (0,5.7) to[short] (0.7,5.7) to[R=$R_3$] (2,6.4) to[short,-*] (2.5,6.4) node[right]{to $G_7$,$G_8$};
+	 			\end{circuitikz}
+	 		\caption{Biasing network}
+	 		\label{fig:B}
+	 	\end{subfigure}
+ 	%
+ 	\hspace{1cm}
+		\begin{subfigure}[t]{0.4\textwidth}
+				\begin{circuitikz}
+					\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+					\ctikzset{bipoles/capacitor/height=0.5}
+					\ctikzset{bipoles/capacitor/width=0.1}
+					%drawing MOS
+					\draw (0,0) to[Tnmos,n=M1] (0,2)
+					(M1.source) node[right=3mm, above=3mm]{$M1$};
+					\draw (M1.gate) to[short,-*] (-1,1);
+					
+					\draw (0,2) -- (-2,2)
+					to[Tnmos,n=M3] (-2,4)
+					(M3.source) node[right=3mm, above=3mm]{$M3$};
+					
+					\draw (0,2) -- (2,2) to[Tnmos,mirror,n=M4] (2,4)
+					(M4.source) node[left=3mm, above=3mm]{$M4$};
+					
+					\draw (-2,4) -- (-3,4)
+					to[Tnmos,n=M6] (-3,5.5)
+					(M6.source) node[right=3mm, above=3mm]{$M6$};
+					
+					\draw (-2,4) -- (-1,4) to[Tnmos,mirror,n=M7] (-1,5.5)
+					(M7.source) node[left=3mm, above=3mm]{$M7$};
+					
+					\draw (2,4) -- (1,4) to[Tnmos,n=M8] (1,5.5)
+					(M8.source) node[right=3mm, above=3mm]{$M8$};
+					
+					\draw (2,4) -- (3,4) to[Tnmos,mirror,n=M9] (3,5.5)
+					(M9.source) node[left=3mm, above=3mm]{$M9$};
+					
+					%drawing VLO-
+					\draw (M7.gate) -- (M8.gate);
+					\draw (M7.gate) -| (0,4.5);
+					\draw (0,4.5) to[C=$C_{signal}$] (0,3) to[short,-*] (0,3) node[below]{$V_{LO}-$};
+					
+					%drawing RL and out connections
+					\draw (M6.drain) -- (-3,6) to[R=$R_L$,n=RL1] (-3,7) -- (-3,7.5);
+					\draw (M9.drain) --(3,6) to[R=$R_L$,n=RL2] (3,7) -- (3,7.5);
+					\draw (-1,5.5) -- (3,6);
+					\draw (1,5.5) -- (-3,6);
+					
+					%Vdd and ground
+					\draw (-3,7.5) node[above=3mm,right=3cm]{$V_{dd}$} -- (3,7.5);
+					\draw (M1.source) -- (0,0) node[sground]{};
+					
+					% VLO+-
+					\draw (M6.gate) -| (-4,4.75) to[short,-*] (-4,4.75) node[left]{to $G9$};
+					%-| (-4,4.7) to[short,-*] (-4,3) node[left]{to $G_9$};
+					\draw (M9.gate) -| (4,4.7) to[C=$C_{signal}$] (4,3) to[short,-*] (4,3) node[below]{$V_{LO}+$};
+					
+					% VRF+-
+					\draw (M3.gate) -| (-3,2) to[C, l_=$C_{signal}$] (-3,1) to[short,-*] (-3,0.5) node[left]{$V_{RF}+$};
+					\draw (M4.gate) -| (3,2) to[C, l_=$C_{signal}$] (3,1) to[short,-*] (3,0.5) node[left]{$V_{RF}-$};
+					%\draw (M4.gate) -- (3,3) to[short,-*] (3,3) node[right]{$V_{RF}-$};
+					
+					%Out nodes
+					\draw (-3, 6) to[short,*-*] (-4, 6) node[left]{$V_{out}+$};
+					\draw (3, 6) to[short,*-*] (4, 6)node[right]{$V_{out}-$};
+				\end{circuitikz}
+				\caption{Gilbert Mixer}
+			\label{fig:A}
+		\end{subfigure}
+		
+\end{figure}
+	\begin{circuitikz}
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		\ctikzset{bipoles/capacitor/height=0.5}
+		\ctikzset{bipoles/capacitor/width=0.1}
+		%M2
+		\draw (-2,0) to[Tnmos,mirror,n=M2] (-2,1.5);
+		\draw (-2,3) to[I=$I_{ref}$] (M2.drain);
+		\draw (M2.source) node[sground]{};
+		\draw (M2.source) node[left=3mm, above=3mm]{$M2$};
+		%M1
+		\draw (1,0) to[Tnmos,n=M1] (1,1.5);
+		\draw (M1.source) node[sground]{};
+		\draw (M1.gate) -- (M2.gate) |- (M2.drain);
+		%Current short
+		\draw (1,3) to[short,i>=$I_0$] (M1.drain);
+		\draw (M1.source) node[right=3mm, above=3mm]{$M1$};
+		\draw (1.5,0) to[open, v=$V_{DS1}$] (1.5,1.5);
+		\draw (M1.source) to[open,v^=$V_{GS1}$] (M1.gate);
+	\end{circuitikz}
+	%
+	\begin{circuitikz}
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		%I_0 and RS
+		\draw (0,0) to[short,i<=$I_0$] (0,1);
+		\draw (0,1) to[R,l_=$R_S$] (-1,1) -| (-1.5,1.5) to[Tnmos,n=M3] (-1.5,2) to[twoport,l=$LO_{stage}$] (-1.5,4);
+		\draw (M3.source) node[right=3mm, above=3mm]{$M3$};
+		\draw (0,1) to[R,l=$R_S$] (1,1) -| (1.5,1.5) to[Tnmos,n=M4,mirror] (1.5,2) to[twoport,l=$LO_{stage}$] (1.5,4);;
+		\draw (M4.source) node[left=3mm, above=3mm]{$M4$};
+		\draw (M3.gate) -| (-2.5,1.7) to[short,-*] (-2.5,1.75) node[below]{$V_{in1}$};
+		\draw (M4.gate) -| (2.5,1.7) to[short,-*] (2.5,1.75) node[below]{$V_{in2}$};
+		%Vx Vy
+		\draw (M3.drain) -| (-1,2.3) to[short,-*] (-1,2.3) node[right]{$V_x$};
+		\draw (M4.drain) -| (1,2.3) to[short,-*] (1,2.3) node[left]{$V_x$};
+	\end{circuitikz}
+
+\vspace{3cm}
+
+	\begin{circuitikz}
+		\draw (-2,4) -- (-3,4)
+		to[Tnmos,n=M6] (-3,5.5)
+		(M6.source) node[right=3mm, above=5mm]{$M6$};
+		
+		\draw (-2,4) -- (-1,4) to[Tnmos,mirror,n=M7] (-1,5.5)
+		(M7.source) node[left=3mm, above=5mm]{$M7$};
+		
+		\draw (2,4) -- (1,4) to[Tnmos,n=M8] (1,5.5)
+		(M8.source) node[right=3mm, above=5mm]{$M8$};
+		
+		\draw (2,4) -- (3,4) to[Tnmos,mirror,n=M9] (3,5.5)
+		(M9.source) node[left=3mm, above=5mm]{$M9$};
+		
+		%drawing VLO-
+		\draw (M7.gate) -- (M8.gate);
+		\draw (M7.gate) -| (0,4.5);
+		\draw (0,4.5) to[short,-*] (0,3) node[below]{$V_{LO}-$};
+		
+		%Out nodes
+		\draw (-3, 6) to[short,*-*] (-4, 6) node[left]{$V_{out}+$};
+		\draw (3, 6) to[short,*-*] (4, 6)node[right]{$V_{out}-$};
+		\draw (M6.drain) to[short] (-3,7);
+		\draw (M6.gate) -| (-4,3) to[short,-*] (-4,3) node[below]{$V_{LO}+$};
+		\draw (M7.drain) -- (3,6);
+		\draw (M8.drain) -- (-3,6);
+		\draw (M9.drain) to[short] (3,7);
+		\draw (M9.gate) -| (4,3) to[short,-*] (4,3) node[below]{$V_{LO}+$};
+		\draw (-2,3) -- (-2,4)
+		(2,3) -- (2,4);
+	\end{circuitikz}
+
+\vspace{3cm}
+\begin{circuitikz}
+	\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+	\ctikzset{bipoles/capacitor/height=0.5}
+	\ctikzset{bipoles/capacitor/width=0.1}
+	%drawing MOS
+	\draw (0,0) to[Tnmos,n=M1] (0,1.6) to[short,i<=$I_0$] (0,1.7) -- (0,2)
+	(M1.source) node[right=3mm, above=3mm]{$M1$};
+	\draw (M1.gate) -| (-1,0.8) to[short,-*] (-1,0.8);
+	
+	\draw (0,2) -- (-2,2)
+	to[Tnmos,n=M3] (-2,3.3) to[short,i<=$I_3$] (-2,4)
+	(M3.source) node[right=3mm, above=3mm]{$M3$};
+	
+	\draw (0,2) -- (2,2) 
+	to[Tnmos,mirror,n=M4] (2,3.3) to[short,i<=$I_4$] (2,4)
+	(M4.source) node[left=3mm, above=3mm]{$M4$};
+	
+	\draw (-2,4) -- (-3,4)
+	to[Tnmos,n=M6] (-3,5.5)
+	(M6.source) node[right=3mm, above=3mm]{$M6$};
+	
+	\draw (-2,4) -- (-1,4) to[Tnmos,mirror,n=M7] (-1,5.5)
+	(M7.source) node[left=3mm, above=3mm]{$M7$};
+	
+	\draw (2,4) -- (1,4) to[Tnmos,n=M8] (1,5.5)
+	(M8.source) node[right=3mm, above=3mm]{$M8$};
+	
+	\draw (2,4) -- (3,4) to[Tnmos,mirror,n=M9] (3,5.5)
+	(M9.source) node[left=3mm, above=3mm]{$M9$};
+	
+	%drawing VLO-
+	\draw (M7.gate) -- (M8.gate);
+	\draw (M7.gate) -| (0,4.5);
+	\draw (0,4.5) to[C=$C_{signal}$] (0,3) to[short,-*] (0,3) node[below]{$V_{LO}-$};
+	
+	%drawing RL and out connections
+	\draw (M6.drain) to[short,i<=$I_6$] (-3,6) to[short,i^<=$I_{01}$] (-3,6.8) to[short] (-3,7) to[R=$R_L$,n=RL1] (-3,8) -- (-3,8.3);
+	\draw (M7.drain) to[short,i<=$I_7$] (-1,5.8) to[short,i<=$I_{02}$] (-1,6.8) to[short] (-1,7)to[R,l_=$R_L$,n=RL2] (-1,8) -- (-1,8.3);
+	\draw (-1,6) to[short,i>=$I_9$] (1,5.75) -- (3,5.5);
+	\draw (-3,6) to[short,i_>=$I_8$](-1,5.75) -- (1,5.5);
+	
+	%VO diff
+	\draw (-1,6.8) to[short,-o] (-1.3,6.8);
+	\draw (-3,6.8) to[short,-o] (-2.7,6.8);
+	\draw (-1.3,6.8) to[open,v=$v_{od}$] (-2.6,6.8);
+	%Vdd and ground
+	\draw (-3,8.3) node[above=2mm,right=6mm]{$V_{dd}$} -- (-1,8.3);
+	\draw (M1.source) -- (0,0) node[sground]{};
+	
+	% VLO+-
+	\draw (M6.gate) -| (-4,4.75) to[short,-*] (-4,4.75) node[left]{to $G9$};
+	%-| (-4,4.7) to[short,-*] (-4,3) node[left]{to $G_9$};
+	\draw (M9.gate) -| (4,4.7) to[C=$C_{signal}$] (4,3) to[short,-*] (4,3) node[below]{$V_{LO}+$};
+	
+	% VRF+-
+	\draw (M3.gate) -| (-3,2) to[C, l_=$C_{signal}$] (-3,1) to[short,-*] (-3,0.5) node[left]{$V_{RF}+$};
+	\draw (M4.gate) -| (3,2) to[C, l_=$C_{signal}$] (3,1) to[short,-*] (3,0.5) node[left]{$V_{RF}-$};
+	%\draw (M4.gate) -- (3,3) to[short,-*] (3,3) node[right]{$V_{RF}-$};
+	
+	%Out nodes
+	%\draw (-3, 6) to[short,*-*] (-4, 6) node[left]{$V_{out}+$};
+	%\draw (-1, 6) to[short,*-*] (0, 6)node[right]{$V_{out}-$};
+\end{circuitikz}
+\end{document}
+
+	
