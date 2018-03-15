@@ -9,17 +9,39 @@
 
 \section{Simulation vs schematic comparison}
 
-Last step was to characterize the layout and evaluate its behaviour in comparison with the schematic. The analysis carried on are the following:
+\subsection{Simulation setup}
+Last step was to characterize the layout and evaluate its behaviour in comparison with the schematic. The carried on analysis are the following:
 \begin{itemize}
-	\item Time domain mixed signal and spectral components
-	\item Oscillator amplitude to maximize output component
-	\item Conversion gain and 1dB compression point
-	\item Single tone IIP\textsubscript{3}
-	\item Two tone IIP\textsubscript{3}
-	\item Bandwidth and CMRR of RF stage (output node filtering of output signal, current mixing)
-	\item Static power dissipation
+	\item Time domain mixed signal and spectral components;
+	\item Oscillator amplitude to maximize output component;
+	\item Conversion gain and 1dB compression point;
+	\item Single tone IIP\textsubscript{3};
+	\item Two tone IIP\textsubscript{3};
+	\item Bandwidth and CMRR of RF stage (output node filtering of output signal, current mixing);
+	\item Static power dissipation;
 \end{itemize}
 All the analysis were developed using monochromatic signals at frequencies 100MHz for LO, 110MHz for RF, and considering the mixer working in down-conversion (10MHz IF frequency).
+\begin{figure}[H]
+	\centering %se si cambia posizione a questa immagine assicurarsi che sia girata con il fondo verso il bordo esterno della pagina
+	\includegraphics[scale=0.28]{setup}
+	\caption{Simulation set-up.}
+	\label{fig:setup}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.1]{balun}
+	\caption{Balun schematic.}
+	\label{fig:balun}
+\end{figure}
+To compare schematic and layout we used the set-up proposed in figure \ref{fig:setup}, that includes:
+\begin{itemize}
+	\item The symbols related to mixer's schematic and layout under test.
+	\item Input AC signals generators. Those elements are connected to ideal baluns (figure \ref{fig:balun}) in order to simulate a perfect 50 \(\Omega\) impedance matching condition, producing differential inputs also. Two LO generators are used to customize the optimal carrier power level entering in each mixer.
+	\item Power supply net, implicitly connected to both layout and schematic.
+	\item Mixer's loads, represented by 50\(\Omega\) resistors connected to unitary gain driven generator. This is used both for ideal impedance matching purposes and to convert differential (balanced) output from mixers to single-ended (unbalanced).
+\end{itemize}
+
 
 \begin{figure}[H] 
 	\centering
@@ -28,6 +50,7 @@ All the analysis were developed using monochromatic signals at frequencies 100MH
 	\caption{Discrete Fourier transform: double balanced differential output with v\textsubscript{RF}=200mV,  f\textsubscript{RF}=110MHz, v\textsubscript{RF}=1.23mV, f\textsubscript{LO}=100MHz,cosine squared smoothing function. a) layout, b) schematic}
 	\label{fig:TdomaniDFT}
 \end{figure}
+
 \subsection{Time domain mixed signal}
 The mixed output signal with \(v_{rf}=\)200mV and \(v_{lo}=\)1.23V is visible in figure \ref{fig:TdomaniWF}. The waveform looks like the expected one from literature \textbf{(REFERENCE)}.
 Applying the discrete Fourier transform to the if signal we found the graph seen in figure \ref{fig:TdomaniDFT}a and \ref{fig:TdomaniDFT}b.
@@ -117,7 +140,9 @@ Linear regression was applied to the curves to find the third order intercept po
 In order to simulate the behaviour of a non-monochrome, fixed-bandwidth signal, the two tone analysis has been carried on. Two RF tones at f\textsubscript{RF}=110MHz and f\textsubscript{RF}\textsuperscript{'}=f\textsubscript{RF}+\(\delta\)f=111MHz have been adopted.
 Figure \ref{fig:1dB_2tones} shows the 1dB compression point in this case.
 Third order intermodulation frequency components result to be at \(9Mhz\) and \(12MHz\). Their behaviour along with increasing input power is shown in figure \ref{fig:IIP3_2t_schem}a and \ref{fig:IIP3_2t_schem}b. 
-Graphs show that power related to fundamental is strongly reduced when two tones are injected, since power is equally spread among them. From simulation appears that the IIP\textsubscript{3} is reduced by roughly three dB, accordingly to the doubled power injected due two tones. Once again the layout looks less performing. Frequency spectra at difference input power is shown in figure \ref{fig:DFT_2ton} and \ref{fig:DFT_2ton_zoom}. From the latter, informations about the carrier to third intermodulation data are selected. In particular, the 1dB compression point spectrum has been chosen (P\textsubscript{RF}=-9.68dB\textsubscript{m}), since this is set as the maximum input power accepted by the multiplier without heavy distortion. As it appears, power carried from fundamental tones (10MHz and 11MHz) barely increases after this point, whereas other tones keep increasing.
+Graphs show that power related to fundamental is strongly reduced when two tones are injected, since power is equally spread among them. From simulation appears that the IIP\textsubscript{3} is reduced by roughly three dB, accordingly to the doubled power injected due two tones. 
+
+Frequency spectra at difference input power are shown in figure \ref{fig:DFT_2ton} and \ref{fig:DFT_2ton_zoom}. From the latter, informations about the carrier to third intermodulation data are selected. In particular, the 1dB compression point spectrum has been chosen (P\textsubscript{RF}=-9.68dB\textsubscript{m}), since this is set as the maximum input power accepted by the multiplier without heavy distortion. As it appears, power carried from fundamental tones (10MHz and 11MHz) barely increases after this point, whereas other tones keep increasing. Overall, the layout looks less performing as expected.  
 
 \begin{table} [H]
 	\label{tab:IIP3_2tone}
