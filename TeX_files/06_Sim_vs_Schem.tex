@@ -30,7 +30,7 @@ All the analysis were developed using monochromatic signals at frequencies 100MH
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.1]{balun}
+	\includegraphics[scale=0.08]{balun}
 	\caption{Balun schematic.}
 	\label{fig:balun}
 \end{figure}
@@ -42,19 +42,25 @@ To compare schematic and layout we used the set-up proposed in figure \ref{fig:s
 	\item Mixer's loads, represented by 50\(\Omega\) resistors connected to unitary gain driven generator. This is used both for ideal impedance matching purposes and to convert differential (balanced) output from mixers to single-ended (unbalanced).
 \end{itemize}
 
+\subsection{Bandwidth evaluation}
 
+Being a mixer a non-linear circuit, we cannot evaluate the bandwidth computing Bode's diagram by means of AC small signal analysis. 
+A first, rough, idea about each transistors performances can be obtained by measuring the transition frequency. Current gains have been simulated for both RF and LO stages, whit bias operative condition previously found (figure \ref{fig:bandwidth}a), having:
+\begin{gather}
+f_T|_{RF}=9.43GHz \notag \\
+f_T|_{LO}=1.12GHz \notag 
+\end{gather}  
+These frequency values are not directly related to the circuit's actual speed, however a limiting upper bound can be used as reference (\textbf{quale??}). 
+
+Figure \ref{fig:bandwidth}b shows the conversion gain as a function of RF input signal. We set \(f_{LO}=f_{RF}-10\)MHz, in order to keep constant \(f_{IF}\). As it appears our working point presents a small decreasing from maximum gain, it is quite distant from the -3dB point though (almost 2 octaves lower).
 \begin{figure}[H] 
 	\centering
-	\subfloat[][\emph{layout}]{\includegraphics[scale=.6]{DFT_layout}} \\
-	\subfloat[][\emph{schematic}]{\includegraphics[scale=.6]{DFT_schem}}
-	\caption{Discrete Fourier transform: double balanced differential output with v\textsubscript{RF}=200mV,  f\textsubscript{RF}=110MHz, v\textsubscript{RF}=1.23mV, f\textsubscript{LO}=100MHz,cosine squared smoothing function. a) layout, b) schematic}
-	\label{fig:TdomaniDFT}
+	\subfloat[][\emph{current gain}]{\includegraphics[scale=.75]{transition_freq}} \\
+	\subfloat[][\emph{Conversion gain vs bandwidth}]{\includegraphics[scale=.75]{bandwidth}}
+	\caption{a) transition frequency and b) mixer bandwidth evaluation. In figure b it is possible to identify the constant gain region (f\textsubscript{30MHz}), gain value for this project (f\textsubscript{110MHz})  and -3dB points for RF and LO stages respectively.}
+	\label{fig:bandwidth}
 \end{figure}
 
-\subsection{Time domain mixed signal}
-The mixed output signal with \(v_{rf}=\)200mV and \(v_{lo}=\)1.23V is visible in figure \ref{fig:TdomaniWF}. The waveform looks like the expected one from literature \textbf{(REFERENCE)}.
-Applying the discrete Fourier transform to the if signal we found the graph seen in figure \ref{fig:TdomaniDFT}a and \ref{fig:TdomaniDFT}b.
-It's clearly visible the intrinsic capability of double balanced mixer of rejecting input components at \(v_{lo}=100\)MHz and \(v_{rf}=\)110MHz.
 
 \begin{figure}[H]
 	\centering
@@ -63,36 +69,38 @@ It's clearly visible the intrinsic capability of double balanced mixer of reject
 	\label{fig:maxGainvsLO}
 \end{figure}
 
-\subsection{Maximum conversion gain vs LO}
-Input LO signal was swept to find the optimum value that maximizes output voltage at IF. The analysis has been carried on for both schematic and layout circuit. Voltage \(v_{rf}=200mV\) was kept constant during the analysis, and output amplitude at 10MHz was divided by LO amplitude such that the peak corresponds to the maximum LO amplitude for which IF output power saturates. Results are shown in figure \ref{fig:maxGainvsLO}. It can be noticed that schematic and layout reach their maximum for different values of LO signal, \(2.5V\) and \(1.23V\) respectively. In general it can be noticed that layout has an higher gain than the schematic. Trying to change \(v_{rf}\) amplitude very tiny changes in peak output voltage where found, so the first analysis was kept as a quite good estimation for optimum LO peak voltage. From now on all the comparison between the two circuits have been made imposing the optimum LO voltage for each circuit.
+If we consider f\textsubscript{-3dB} as the maximum operative frequency we that the circuit presents surprising performance, since this point gets very close to transition frequency. However we never considered the reactive behaviour of the devices (because of the strong non linearity of the device), nor parasitics due to layout that surely would make these features worse.
+Our assumptions on LO and RF frequencies were thus considered adequate, since represent the worst-case performances of the mixer. Moreover it has to be noticed that the mixing operation is done on the RF current. Maximum operating frequency could thus be improved reducing output node capacitance. 
 
+\subsection{Time domain mixed signal}
+The mixed output signal with \(v_{rf}=\)200mV and \(v_{lo}=\)1.23V is visible in figure \ref{fig:TdomaniWF}. The waveform looks like the expected one from literature \textbf{(REFERENCE)}.
+Applying the discrete Fourier transform to the if signal we found the graph seen in figure \ref{fig:TdomaniDFT}a and \ref{fig:TdomaniDFT}b.
+It's clearly visible the intrinsic capability of double balanced mixer of rejecting input components at \(v_{lo}=100\)MHz and \(v_{rf}=\)110MHz.
+
+\begin{figure}[H] 
+	\centering
+	\subfloat[][\emph{layout}]{\includegraphics[scale=.75]{DFT_layout}} \\
+	\subfloat[][\emph{schematic}]{\includegraphics[scale=.75]{DFT_schem}}
+	\caption{Discrete Fourier transform: double balanced differential output with v\textsubscript{RF}=200mV,  f\textsubscript{RF}=110MHz, v\textsubscript{RF}=1.23mV, f\textsubscript{LO}=100MHz,cosine squared smoothing function. a) layout, b) schematic}
+	\label{fig:TdomaniDFT}
+\end{figure}
+
+
+\subsection{Maximum conversion gain vs LO}
+Input LO signal was swept to find the optimum value that maximizes output voltage at IF. The analysis has been carried on for both schematic and layout circuit. Voltage \(v_{rf}=200mV\) was kept constant during the analysis, and output amplitude at 10MHz was divided by LO amplitude such that the peak corresponds to the maximum LO amplitude for which IF output power saturates. Results are shown in figure \ref{fig:maxGainvsLO}. It can be noticed that schematic and layout reach their maximum for different values of LO signal, \(2.5V\) and \(1.23V\) respectively. 
+In general it can be noticed that layout has an higher gain than the schematic. Trying to change \(v_{rf}\) amplitude very tiny changes in peak output voltage where found, so the first analysis was kept as a quite good estimation for optimum LO peak voltage. From now on all the comparison between the two circuits have been made imposing the optimum LO voltage for each circuit.
 
 \subsection{Conversion gain and 1dB compression point}
 Keeping optimum LO amplitude, RF's voltage was swept in order to see how output power at IF frequency increases with input power at RF. Reference port for all power measurement has been chosen to be \(50\ohm\). \(P_{IF}\) as a function of \(P_{RF}\) conversion gain is shown in figure \ref{fig:PinPout1T_1dBCp} for both schematic and layout, whereas gain can be seen in figure \ref{fig:GainvsRF}. 
-\begin{figure}[H] 
-	\centering
-	\subfloat[][\emph{P\textsubscript{in}/P\textsubscript{out}}]{\includegraphics[scale=.7]{pin_pout_VRF}} \\
-	\subfloat[][\emph{1dB compression point}]{\includegraphics[scale=.7]{1dB_compression_1tone}}
-	\caption{a) P\textsubscript{in}/P\textsubscript{out} and  b) 1dB compression point, one-tone analysis.}
-	\label{fig:PinPout1T_1dBCp}
-\end{figure}
-
 From simulation we have:
 \begin{gather}
 A_{vC}|_{layout}=2.926 \notag \\ 
 A_{vC}|_{schematic}=2.675 \notag
 \end{gather}
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.7]{gain_vs_VRF}
-	\caption{Conversion gain vs v\textsubscript{RF}.}
-	\label{fig:GainvsRF}
-\end{figure}
-
 Extrapolation of 1dB compression point was carried on, leading to the measurement of RF power for which the gain drops of 1dB equal to 
 \begin{gather}
- P_{RF,in}|_{layout}=5.24dB_{m} \notag \\
- P_{RF,in}|_{schematic}=3.51dB_{m} \notag
+P_{RF,in}|_{layout}=5.24dB_{m} \notag \\
+P_{RF,in}|_{schematic}=3.51dB_{m} \notag
 \end{gather}
 then, respectively for schematic and layout, corresponding to the voltages:
 \begin{gather}
@@ -100,27 +108,29 @@ V_{RF,in}|_{layout}=122.3mV \notag \\
 V_{RF,in}|_{schematic}=149.2mV \notag
 \end{gather}
 
+
+
+\begin{figure}[H] 
+	\centering
+	\subfloat[][\emph{P\textsubscript{in}/P\textsubscript{out}}]{\includegraphics[scale=.75]{pin_pout_VRF}} \\
+	\subfloat[][\emph{1dB compression point}]{\includegraphics[scale=.75]{1dB_compression_1tone}}
+	\caption{a) P\textsubscript{in}/P\textsubscript{out} and  b) 1dB compression point, one-tone analysis.}
+	\label{fig:PinPout1T_1dBCp}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.75]{gain_vs_VRF}
+	\caption{Conversion gain vs v\textsubscript{RF}.}
+	\label{fig:GainvsRF}
+\end{figure}
+
+
 \subsection{Single tone third order distortion}
 Using single tone RF signal, power on the third harmonic with respect to the IF tone has been measured. Third order distortion is in fact the first contribution to non-linearities\textbf{(SELFREFERENCE)}. 
 The typical cubic behaviour with respect to the linear one of the conversion gain can be easily seen in logarithmic scale, shown in figure \ref{fig:IIP3_1t_schem} for the schematic and in figure \ref{fig:IIP3_1t_layout} for the layout. 
 Linear regression was applied to the curves to find the third order intercept points for both schematic and layout test benches. Values of IIP3 and OIP3 thus found for both layout and schematic are reported in table \textbf{2}. From where it appears that the layout extracted introduces less third order distortion than schematic, fifth order distortion looks higher at lower input power though.
-
-\begin{figure}[H] 
-	\centering
-	\subfloat[][\emph{harmonics power}]{\includegraphics[scale=.7]{IIP3_schem_1tone}} \\
-	\subfloat[][\emph{detail in IIP3 and IIP5}]{\includegraphics[scale=.7]{IIP3_schem_1tone_zoom}}
-	\caption{Harmonics power, IIP\textsubscript{3} and IIP\textsubscript{5} in schematic, one tone analysis.}
-	\label{fig:IIP3_1t_schem}
-\end{figure}
-
-\begin{figure}[H] 
-	\centering
-	\subfloat[][\emph{}]{\includegraphics[scale=.7]{IIP3_layout_1tone}} \\
-	\subfloat[][\emph{}]{\includegraphics[scale=.7]{IIP3_layout_1tone_zoom}}
-	\caption{IIP\textsubscript{3} and IIP\textsubscript{5} in layout, one tone analysis.}
-	\label{fig:IIP3_1t_layout}
-\end{figure}
-
 \begin{table} [H]
 	\label{tab:IIP3_1tone}
 	\caption{IIP3 and IIP5 in one tone analysis.}
@@ -136,6 +146,23 @@ Linear regression was applied to the curves to find the third order intercept po
 		\bottomrule 
 	\end{tabular}	
 \end{table}
+
+\begin{figure}[H] 
+	\centering
+	\subfloat[][\emph{harmonics power}]{\includegraphics[scale=.75]{IIP3_schem_1tone}} \\
+	\subfloat[][\emph{detail in IIP3 and IIP5}]{\includegraphics[scale=.75]{IIP3_schem_1tone_zoom}}
+	\caption{Harmonics power, IIP\textsubscript{3} and IIP\textsubscript{5} in schematic, one tone analysis.}
+	\label{fig:IIP3_1t_schem}
+\end{figure}
+
+\begin{figure}[H] 
+	\centering
+	\subfloat[][\emph{}]{\includegraphics[scale=.75]{IIP3_layout_1tone}} \\
+	\subfloat[][\emph{}]{\includegraphics[scale=.75]{IIP3_layout_1tone_zoom}}
+	\caption{IIP\textsubscript{3} and IIP\textsubscript{5} in layout, one tone analysis.}
+	\label{fig:IIP3_1t_layout}
+\end{figure}
+
 \subsection{Two tone IM\textsubscript{3} and CIM\textsubscript{3} ratio}
 In order to simulate the behaviour of a non-monochrome, fixed-bandwidth signal, the two tone analysis has been carried on. Two RF tones at f\textsubscript{RF}=110MHz and f\textsubscript{RF}\textsuperscript{'}=f\textsubscript{RF}+\(\delta\)f=111MHz have been adopted.
 Figure \ref{fig:1dB_2tones} shows the 1dB compression point in this case.
@@ -192,7 +219,4 @@ Frequency spectra at difference input power are shown in figure \ref{fig:DFT_2to
 	\label{fig:DFT_2ton_zoom}
 \end{figure}
 
-
-\subsection{Bandwidth and CMRR of RF stage (output node filtering, current mixing)}
-In order to have an estimation of what the maximum operating frequency of the mixer could be, an ac analysis on the differential RF stage has been made, keeping LO stage fixed in bias condition. The analysis led to the bode plot seen in \\FIGURA\\, which shows a \(-3dB\) bandwidth of approximately \(113MHz\), and a common mode rejection ratio of \\dB\\. Our assumptions on LO and RF frequencies were thus considered adequate, since represent the worst-case performances of the mixer. Moreover it has to be noticed that the mixing operation is done on the RF current. Maximum operating frequency could thus be improved reducing output node capacitance. 
 \subsection{pavarotti?}
