@@ -3,12 +3,75 @@
 \subsection{Gilbert Cell design}
 After simulating the design made with Level 1 model, simulation results proven to be not enough accurate to have a correctly behaving circuit.
 For this reason a new design was carried on taking advantage of the simulated trans-characteristic of each stage.\\
-In literature \textbf{(FONTE)} an optimum value for transistors width in mixers is proposed:\footnote{More generally, this gives a compromise between power dissipation and noise in LNA.}
+In literature \textbf{(FONTE)} an optimum value for RF transistors width in mixers is proposed:\footnote{More generally, this gives a compromise between power dissipation and noise in LNA.}
 \begin{equation}
 W_{opt}=\frac{1}{3\omega L C_{ox} R_{g}}
 \end{equation}
 where $\omega$ is the stage's working frequency (i.e. f\textsubscript{LO} or f\textsubscript{RF}), L is the channel length, C\textsubscript{ox} is the MOSFETS's total oxide capacitance and R\textsubscript{g} the generator output resistance (we set this value equal to 50$\Omega$). Values coming from this formula are actually too large ($\ge1$mm), therefore we chose to pursue another approach to begin the design.
-
+The reference schematic is the one in figure \ref{GilbertCell1}.
+\begin{figure}[H]
+	\centering
+	\begin{circuitikz}
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		\ctikzset{bipoles/capacitor/height=0.5}
+		\ctikzset{bipoles/capacitor/width=0.1}
+		%drawing MOS
+		\draw (0,0) to[Tnmos,n=M1] (0,2)
+		(M1.source) node[right=3mm, above=3mm]{$M1$};
+		\draw (M1.gate) to[short,-*] (-1,1);
+		
+		\draw (0,2) -- (-2,2)
+		to[Tnmos,n=M3] (-2,4)
+		(M3.source) node[right=3mm, above=3mm]{$M3$};
+		
+		\draw (0,2) -- (2,2) to[Tnmos,mirror,n=M4] (2,4)
+		(M4.source) node[left=3mm, above=3mm]{$M4$};
+		
+		\draw (-2,4) -- (-3,4)
+		to[Tnmos,n=M6] (-3,5.5)
+		(M6.source) node[right=3mm, above=3mm]{$M6$};
+		
+		\draw (-2,4) -- (-1,4) to[Tnmos,mirror,n=M7] (-1,5.5)
+		(M7.source) node[left=3mm, above=3mm]{$M7$};
+		
+		\draw (2,4) -- (1,4) to[Tnmos,n=M8] (1,5.5)
+		(M8.source) node[right=3mm, above=3mm]{$M8$};
+		
+		\draw (2,4) -- (3,4) to[Tnmos,mirror,n=M9] (3,5.5)
+		(M9.source) node[left=3mm, above=3mm]{$M9$};
+		
+		%drawing VLO-
+		\draw (M7.gate) -- (M8.gate);
+		\draw (M7.gate) -| (0,4.5);
+		\draw (0,4.5) to[C=$C_{signal}$] (0,3) to[short,-*] (0,3) node[below]{$V_{LO}-$};
+		
+		%drawing RL and out connections
+		\draw (M6.drain) -- (-3,6) to[R=$R_L$,n=RL1] (-3,7) -- (-3,7.5);
+		\draw (M9.drain) --(3,6) to[R=$R_L$,n=RL2] (3,7) -- (3,7.5);
+		\draw (-1,5.5) -- (3,6);
+		\draw (1,5.5) -- (-3,6);
+		
+		%Vdd and ground
+		\draw (-3,7.5) node[above=3mm,right=3cm]{$V_{dd}$} -- (3,7.5);
+		\draw (M1.source) -- (0,0) node[sground]{};
+		
+		% VLO+-
+		\draw (M6.gate) -| (-4,4.75) to[short,-*] (-4,4.75) node[left]{to $G9$};
+		%-| (-4,4.7) to[short,-*] (-4,3) node[left]{to $G_9$};
+		\draw (M9.gate) -| (4,4.7) to[C=$C_{signal}$] (4,3) to[short,-*] (4,3) node[below]{$V_{LO}+$};
+		
+		% VRF+-
+		\draw (M3.gate) -| (-3,2) to[C, l_=$C_{signal}$] (-3,1) to[short,-*] (-3,0.5) node[left]{$V_{RF}+$};
+		\draw (M4.gate) -| (3,2) to[C, l_=$C_{signal}$] (3,1) to[short,-*] (3,0.5) node[left]{$V_{RF}-$};
+		%\draw (M4.gate) -- (3,3) to[short,-*] (3,3) node[right]{$V_{RF}-$};
+		
+		%Out nodes
+		\draw (-3, 6) to[short,*-*] (-4, 6) node[left]{$V_{out}+$};
+		\draw (3, 6) to[short,*-*] (4, 6)node[right]{$V_{out}-$};
+	\end{circuitikz}
+	\caption{Reference schematic for the design of Gilbert mixer}
+	\label{fig:GilbertCell1}
+\end{figure}
 The starting specification was to maximize \(g_{m3}\) of the input RF stage, with some reasonable hypotheses on transistor dimensions and power consumption. 
 \begin{align}
 	&L=3 L_{min} = 1.8\mu m \nonumber\\
@@ -83,6 +146,7 @@ Once fixed the node's voltages and the current flowing in the transistor (\(2.9m
 	&L = L_{min} = 0.6\mu m \nonumber
 \end{align}                                                                      
 Only for this stage the minimum channel length was taken, in order to keep small these transistors regardless overdrive small value.
+
                                                                                  
 \subsection{Biasing network design}                                              
 From the previous section, the bias network specifications required by current sink, RF and LO stage are suddenly imposed:
@@ -91,13 +155,35 @@ From the previous section, the bias network specifications required by current s
 	V_{G3}&=3 V \nonumber \\                                                        
 	V_{G6}&=4.33 V \nonumber                                                        
 \end{align}                                                                      
-The bias network circuit employed is visible in \textbf{figure}. 
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[scale=0.6]{NAME}
-%	\caption{CAPTION}
-%	\label{LABEL}
-%\end{figure}
+The bias network circuit employed is visible in figure \ref{fig:biasNet1}. 
+\begin{figure} [H]
+	\centering
+	\begin{circuitikz}
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		\ctikzset{bipoles/capacitor/height=0.5}
+		\ctikzset{bipoles/capacitor/width=0.1}
+		%M2
+		\draw (0,0) to[Tnmos,mirror,n=M2] (0,2);
+		\draw (M2.source) node[left=3mm,above=3mm]{$M2$};
+		\draw (M2.gate)[right] |- (M2.drain);
+		\draw (M2.gate) to[short,-*] (2.5,1) node[right]{to $G_1$};
+		\draw (M2.source) to[short] (0,0) node[sground]{};
+		\draw (0,2) -- (-2,2) to[C=$C_{bias}$] (-2,1) node[sground]{};
+		%M5
+		\draw (M2.drain) to[Tnmos,mirror,n=M5] (0,4.5);
+		\draw (M5.source) node[left=3mm,above=3mm]{$M5$};
+		\draw (M5.gate)[right] |- (M5.drain);
+		\draw (0,4) -- (-2,4) to[C=$C_{bias}$] (-2,3) node[sground]{};
+		\draw (M5.gate) to[R, l_=$R_1$] (2,2.3) to[short,-*] (2.5,2.3) node[right]{to $G_3$};
+		\draw (M5.gate) to[R=$R_1$] (2,3.7) to[short,-*] (2.5,3.7) node[right]{to $G_4$};
+		%R2 R4
+		\draw (M5.drain) to[R=$R_2$,n=R2] (0,6.3) to[R=$R_4$] (0,7.1) to[short,-*] (0,7.5) node[above]{$V_{dd}$};
+		\draw (0,5.7) to[short] (0.7,5.7) to[R,l_=$R_3$] (2,5) to[short,-*] (2.5,5) node[right]{to $G_6$,$G_9$};
+		\draw (0,5.7) to[short] (0.7,5.7) to[R=$R_3$] (2,6.4) to[short,-*] (2.5,6.4) node[right]{to $G_7$,$G_8$};
+	\end{circuitikz}
+	\caption{Reference biasing network schematic}
+	\label{fig:biasNet1}
+\end{figure}
                
 The mirroring ratio for the current sink transistor M1 was chosen to be 1 as chosen in section 3. With a transistor length \(L_2 = 1.8\mu m\), and being \(V_{GS2}=V_{DS2}=1.471V\) imposed, \(W_2\) has been trimmed in the simulator to sink a current equal to \(I_0=5.8mA\), resulting in:
 \begin{align}
@@ -135,3 +221,31 @@ from which the resulting capacitance:
 \begin{align}
 	C_1=C_2=25pF
 \end{align}
+
+\subsection{Validating design of the bias point}
+Designed circuit has been drawn in Cadence to test it entirely. The complete test circuit is shown in figure \ref{S_cad_full}, after dc operating point simulation.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{S_cad_full}
+	\caption{Gilbert cell and bias network schematic}
+	\label{S_cad_full}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{S_cad_I0}
+	\caption{Close up view on current sink and RF stage}
+	\label{S_cad_I0}
+\end{figure}
+As it can be seen from the close-up figure \ref{S_cad_I0} bias voltages and current of the current sink M1 (N15 in Cadence schematic) are practically the same of the ones obtained in the design. Same thing can be stated for RF and LO stage in figure \ref{subfig-1:S_cad_LO} and for the biasing network (figure \ref{subfig-1:S_cad_biasnet}).
+\begin{figure}[H]
+	\centering
+	\subfloat[Close up view of LO stage\label{subfig-1:S_cad_LO}]
+	{\includegraphics[width=0.4\textwidth]{S_cad_LO}}
+	\hfill
+	\subfloat[Close up view of LO stage\label{subfig-1:S_cad_biasnet}]
+	{\includegraphics[width=0.4\textwidth]{S_cad_biasnet}}
+	\caption{}
+\end{figure}
+
+Dynamical analyses on the circuit in figure \ref{S_cad_full} has already been made at this point to verify the correct mixing behaviour. For the sake of a simpler exposition, however, all dynamical analyses have been moved in this treatise to the final chapter. In the next section circuit layout is described. 
