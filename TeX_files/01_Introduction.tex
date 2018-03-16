@@ -1,26 +1,31 @@
 % nel mixer bisogna aggiungere x(t), y(t) in ingresso e z(t) in uscita e aggiungere freccia
 
-\begin{circuitikz} 
-	\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
-	\draw
-	(0,0) node[mixer] (m) {}
-	(m.1) to[short,-] ++(-.5,0)
-	(m.2) to[short,-] ++(0,-.5)
-	(m.3) to[short,-] ++(.5,0)
-	(m.1) node[inputarrow] {} 
-	(m.2) node[inputarrow,rotate=90] {};
-\end{circuitikz}
-
 
 \section{Introduction}
-
+\begin{figure}[H]
+	\centering
+	\scalebox{1.3}
+{
+	\begin{circuitikz} 
+		\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+		\draw
+		(0,0) node[mixer] (m) {}
+		(m.1) to[short,-] ++(-.5,0) node[left]{$x_1(t)$}
+		(m.2) to[short,-] ++(0,-.5) node[below]{$x_2(t)$}
+		(m.3) to[short,-] ++(.5,0) node[inputarrow]{} (.5,0) node[right=3mm]{$y(t)$}
+		(m.1) node[inputarrow] {} 
+		(m.2) node[inputarrow,rotate=90] {};
+	\end{circuitikz}
+}		
+\caption{Representation of a mixer}
+\label{Mixer}
+\end{figure}
 An analog multiplier, also known as mixer, is a circuit that performs the product between two signals. As we will see, this feature can be exploited to convert informations from a certain frequency band to another by means of the intrinsic non-linear behaviour of this net. Supposing to have two sinusoidal signals
 \begin{align}
 x_1(t) &= A_1 \cos(\omega_1 t + \varphi_1) \notag \\
 x_2(t) &= A_2 \cos(\omega_2 t + \varphi_2) \notag
 \end{align}
-and the ideal mixer shown in\textbf{ figure %metti reference
-one} has that the out-coming signal $y(t)$ is given by:
+and the ideal mixer shown in figure \ref{Mixer} has that the out-coming signal $y(t)$ is given by:
 \begin{align}
 y(t)& =x_1(t)\cdot x_2(t)   \notag \\
 & = A_1 A_2 \cos(\omega_1 t + \varphi_1) \cos(\omega_2 t + \varphi_2) \notag \\
@@ -45,14 +50,14 @@ Overall one can read the process as a modulation of an input signal by means of 
 Based on the above, it turns out that to mix-up two signals a non-linear device is needed, since the input components are at different frequency with respect to the output and a non-linear relation between voltages and currents appears. In general, mixing can be carried out by time-varying systems that can be implemented using:
 \begin{description}
 	\item [passive devices]	typically switches (diodes and transistors). In this case the mixing process introduces a \emph{loss} since the output power is always less than the input one.
-	\item [active devices] amplifying devices are used in active region providing \emph{gain}.\footnote{The definition of the gain and loss in mixer will be presented further.} They are more power consuming and less noisy than passive mixers.
+	\item [active devices] amplifying devices are used in active region providing \emph{gain}.\footnote{The definition of the gain and loss in mixer is different with respect to the one of linear devices, and will be discussed further.} They are more power consuming and less noisy than passive mixers.
 \end{description}
 Another way to classify mixers is the following:
 \begin{description}
 	\item [Single balanced mixers] One or both input signals can pass to output, but it is not possible to suppress both of them,
 	\item [Double balanced mixers] Thanks to symmetry in the net both the input and the LO are rejected at the output port. They show better isolation between ports than SBM. 
 \end{description}
-To understand why a transistors can be used, let's consider the non-linear quadratic model for a nMOSFET, supposing to drive that by injecting a two tone signal $v_{GS}(t)=v_{RF}(t)+v_{LO}(t)$ at the gate (down-conversion configuration). One has:
+To understand why a transistor can be used, let's consider the non-linear quadratic model for a nMOSFET. Supposing to drive it by injecting a two tone signal $v_{GS}(t)=v_{RF}(t)+v_{LO}(t)$ at the gate (down-conversion configuration). One has:
 \begin{align}
 i_D(t) &= k(v_{GS}(t)-V_{th})^2 \notag \\
 & = k(v_{RF}(t)+v_{LO}(t)-V_{th})^2 \notag \\
@@ -73,13 +78,13 @@ In case of non-monochromatic signals (general case) one defines the \emph{voltag
 \end{equation}
 moreover, one has that the output power is proportional to LO power (that is also called a \emph{pump}), even if this dependency does not appear explicitly.
 
-An important figure of merit concerning mixers is given by the -1dB compression point of the $P_{in}$/$P_{out}$ characteristic. By increasing the value of the RF signal, the amount of harmonics at the output besides the fundamental IF frequency increases as well, eventually saturating the output signals (gain compression or flatness). This is due to the fact that power is no more mainly carried by the fundamental output tone (i.e. the IF tone), but it is rather shared by all the growing up harmonics. In other words the conversion gain stops to be constant, reduces and the output waveform is clipped. Supposing to have input and output impedance matching one has that:
+An important figure of merit concerning mixers is given by the 1dB compression point of the $P_{in}$/$P_{out}$ characteristic. By increasing the value of the RF signal, the amount of harmonics at the output besides the fundamental IF frequency increases as well, eventually saturating the output (gain compression or flatness). This is due to the fact that power is no more mainly carried by the fundamental output tone (i.e. the IF tone), but it is rather shared by all the growing up harmonics. In other words the conversion gain stops to be constant, reduces itself, and the output waveform is clipped. Supposing to have input and output impedance matching one has that:
 \begin{align}
 	A_{conv}&=\frac{P_{IF}}{P_{RF}} \notag \\
 	10\log_{10}A_{conv} & = 10\log_{10}\frac{P_{IF}}{P_{RF}}  \notag \\
 	10\log_{10}P_{IF} & = 10\log_{10}A_{conv} + 10\log_{10}P_{RF} \notag \\	P_{IF}|_{dB_{m}} &= A_{conv}|_{dB} + P_{RF}|_{dB_{m}}+30dB \notag
 \end{align}
-This suggests both that the ideal output characteristic looks linear in log scale until the gain does not compress and that the -1dB compression point can be defined as the output IF voltage at which:
+This suggests both that the ideal output characteristic looks linear in log scale until the gain does not compress and that the 1dB compression point can be defined as the output IF voltage at which:
 \begin{equation}
 P_{IF}|_{-1dB} = A_{conv}|_{dB} + P_{RF}|_{dBm} -1dB \notag
 \end{equation}
@@ -88,22 +93,22 @@ hence:
 P_{IF}|_{-1dB} = P_{IF}|_{dB_{m},ideal} -1dB \notag
 \end{equation}
 
-Other figures of merit, that play the most important role in defining the 1dB compression point, concern the third order distortions, that can be defined as follow:
+Other important figures of merit concern the third order distortions, that can be defined as follow:
 \begin{description}
 	\item [Third Order Distortion] In this case the input is a monochromatic signal. Because of the intrinsic device's non-linearity, the output signal contains frequency components not present at the input. It can be demonstrated that the most important spurious contribution on output fundamental tone comes from the third order term, in fact, by expanding the device's output current in Taylor's series and supposing a monochromatic gate signal, one has:
 	\begin{align}
 		i_D(t) &= I_D|_{V_{GS}}+av_{gs}(t)+bv_{gs}^2(t)+cv_{gs}^3(t)+\dots \notag \\
 		&=I_D|_{V_{GS}}+i_{D,fund}(t)+i_{D,SOD}(t)+	i_{D,TOD}(t)+\dots
 	\end{align}
-	Where a$>$b$>$c, meaning that increasing input signal strength each element will be more important. Developing the first three terms of the series expansion one has:
+	Where $a>b>c$. Developing the first three terms of the series expansion one has:
 	\begin{align}
 	&i_{D,fund}(t) \propto a\cos(\omega_0 t) \\
 	&i_{D,SOD}(t) \propto b\cos^2(\omega_0 t) =\frac{1}{2}b+\frac{1}{2}b\cos(2\omega_0 t) \\
 	&i_{D,TOD}(t) \propto c\cos^3(\omega_0 t) = \frac{3}{4}c\cos(\omega_0 t) +\frac{1}{4}c\cos(3\omega_0 t)
 	\end{align} 
-	It is straightforward that the third order term yields an additive contribution exactly at the fundamental tone, whereas the second order distortion adds a zero-frequency term that is not damaging (a balanced configuration can reject this signal part). In general, even order distortions (2\textsuperscript{nd}, 4\textsuperscript{th} \dots) contributes in corrupt the output signals as well, they are less important though. Also 5\textsuperscript{th} order distortion exist, for which the same reasonings hold. Since the whole signal is mixed, all the additional tones introduced by distortion are converted and they may produce in-band spurious components.
+	It is straightforward that the third order term yields an additive contribution exactly at the fundamental tone, whereas the second order distortion adds a zero-frequency term that is not interfering with in-band signal (a balanced configuration can reject DC component). In general, even order distortions (2\textsuperscript{nd}, 4\textsuperscript{th} \dots) contributes in corrupting the output signal as well, though they are less important. Also 5\textsuperscript{th} order distortion exist, for which the same reasoning holds. Since the whole signal is mixed, all the additional tones introduced by distortion are moved in frequency and they may produce in-band spurious components.
 	
-	\item [Third Order Intermodulation, CIM\textsubscript{3}] This distortion comes from a two-tone input injection ($f_1 = f_0$ and $f_2=f_0+\delta f$). Due to intermodulation between tones, spurious frequencies are generated. The most important contribution comes from the third order intermodulation (IM3): $|m|+|n|=3$ and $mn<0$ (where $m=\pm2,\pm1$ and $n=\pm2,\pm1$ are the intermodulation indexes). Taking $m=2$ and $n=-1$:
+	\item [Third Order Intermodulation, IM\textsubscript{3}] This distortion comes from a two-tone input injection ($f_1 = f_0$ and $f_2=f_0+\delta f$). Due to intermodulation between tones, unwanted frequencies are generated. The most important contribution comes from the third order intermodulation (IM3): $|m|+|n|=3$ and $m\cdot n<0$ (where $m=\pm2,\pm1$ and $n=\pm2,\pm1$ are the intermodulation indexes). Taking $m=2$ and $n=-1$:
 	\begin{equation}
 		f_{IM3}|_{m=2,n=1} =  2f_1 - f_2 = f_0 - \delta f \notag
 	\end{equation}
@@ -117,7 +122,7 @@ Other figures of merit, that play the most important role in defining the 1dB co
 	\begin{equation}
 	f_{IM3}|_{m=-1,n=2} =  -f_1 +2 f_2 = f_0 + \delta f \notag
 	\end{equation} 
-	We notice that the whole spectrum presents side-bands produced by intermodulation. This phenomenon is called \emph{spectra regrowth} and it can be quantified by the \emph{Carrier to Intermodulation Ratio}.
+	We notice that the whole spectrum presents side-bands produced by intermodulation. This phenomenon is called \emph{spectral regrowth} and it can be quantified by the \emph{Carrier to Intermodulation Ratio (CIM)}.
 	In case of mixing we change frequency band from input to output, anyway the previous result holds:
 	\begin{gather}
 			f_{IF,IM3}|_{m=2,n=-1} = 2f_{RF1} - f_{RF2} -f_{LO}= f_{IF} - \delta f \notag
