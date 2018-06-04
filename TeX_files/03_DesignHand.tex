@@ -3,51 +3,137 @@
 \subsection{Design specifications}
 The design specifications follow:
 \begin{itemize}
-	\item The use technology is the AMI 0.6$\mu$m by MOSIS. \textbf{No constrains regarding maximum gate width are considered. This technology is nowadays  old-fashioned, hence this project has only didactic purposes}. The Cadence Design Environment will be used to carry on the project;
+	\item The use technology is the MOSIS AMI 0.6$\mu$m. \textbf{Loose constraints regarding maximum gate width have been considered. This technology is nowadays  old-fashioned, hence this project has only didactic purposes}. Cadence Design Environment has been used to carry on the project;
 	\item the supply voltage is V\textsubscript{DD}=5V;
-	\item we are design a down-conversion mixer. The analysis will be carried on considering two monochromatic signals f\textsubscript{RF}=110 MHz and f\textsubscript{LO}=100 MHz, producing a wanted baseband signal at f\textsubscript{IF}=10 MHz (the HF component is considered as filtered out);
+	\item the design is about a down-conversion mixer. The analysis will be carried on considering two monochromatic signals f\textsubscript{RF}=110 MHz and f\textsubscript{LO}=100 MHz, producing a wanted baseband signal at f\textsubscript{IF}=10 MHz (the HF component is considered as filtered out);
 	\item all the transistors should work in saturation;
-	\item the conversion gain is chosen accordingly to the previous specification equal to G\textsubscript{vC}=15dB\textsubscript{20}.
+	\item the conversion gain is chosen accordingly to the previous specification equal to A\textsubscript{vC}=4.
 \end{itemize}
 The most important parameters used in the design are reported in the following table: \footnote{MOSFET's parameters are intended at T=27$^\circ$C}
 \begin{table} [h]
 	\label{tab:specs}
 	\caption{}
 	\centering	
-	\begin{tabular}{lcc} 
+	\begin{tabular}{llcc} 
 		\toprule 
-		Parameter Name			& Value 	& Unit \\ 
+		Parameter & Name			& Value 	& Unit \\ 
 		\midrule
-		A\textsubscript{vC} & 5.6 & \\
-		V\textsubscript{DD}		&	5 & V		\\
-		I\textsubscript{0} & 5 & mA \\
-		V\textsubscript{th0}			& 0.709 &V		\\ 
-		K\textsubscript{n} & 116 & $\mu$A/V\textsuperscript{2}\\
-		I\textsubscript{dss}	& 466 & $\mu$A/$\mu$m \\
-		$\phi_P$ & 0.7 & V \\
-		$\gamma_B$ & 0.5 & V \\
-		L\textsubscript{min} & 0.6 & $\mu$m \\
+		A\textsubscript{vC} & Voltage Conversion gain & 5.6 & \\
+		V\textsubscript{DD} & Supply voltage &	5 & V		\\
+		I\textsubscript{0} & Cell biasing current & 5 & mA \\
+		V\textsubscript{th0} & n-MOS threshold w.o. body effect& 0.709 &V		\\ 
+		K\textsubscript{n} & n-MOS physical parameter& 116 & $\mu$A/V\textsuperscript{2}\\
+		I\textsubscript{dss} & Maximum channel current density & 466 & $\mu$A/$\mu$m \\
+		$\phi_P$ & Fermi potential & 0.7 & V \\
+		$\gamma_B$ & Body effect coefficient & 0.5 & V \\
+		L\textsubscript{min} & Technology minimum length & 0.6 & $\mu$m \\
 		\bottomrule 
 	\end{tabular}	
 \end{table}
 
-It is necessary to notice that the following calculation is carried on considering the easiest between the physic-based models for a MOSFET, i.e. the level 1 model and its aim is to make the reader to understand the design choices that follow in the next section. Moreover, the used model relies on a level 3 model, that takes count of short channel effects (we are using sub-micrometric devices) and non-ideality such as the carrier velocity saturation. 
+It is necessary to notice that the following calculation is carried on considering the easiest model among the physic-based models for a MOSFET, i.e. the level 1 model. Its aim is to make easy the understanding of design choices which follow in next section. The final design rose the need to rely on the more complex model of the simulator which takes into account all sub-micron device non idealities such as the carrier velocity saturation and pronounced body effect. 
 
 \subsection{Gilbert cell design flow} 
-
+\begin{figure}[H] 
+	\centering
+	\subfloat[][\emph{Bias net}]{\scalebox{0.75}{\begin{circuitikz}
+				\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+				\ctikzset{bipoles/capacitor/height=0.5}
+				\ctikzset{bipoles/capacitor/width=0.1}
+				%M2
+				\draw (0,0) to[Tnmos,mirror,n=M2] (0,2);
+				\draw (M2.source) node[left=3mm,above=3mm]{$M2$};
+				\draw (M2.gate)[right] |- (M2.drain);
+				\draw (M2.gate) to[short,-*] (2.5,1) node[right]{to $G_1$};
+				\draw (M2.source) to[short] (0,0) node[sground]{};
+				\draw (0,2) -- (-2,2) to[C=$C_{bias}$] (-2,1) node[sground]{};
+				%M5
+				\draw (M2.drain) to[Tnmos,mirror,n=M5] (0,4.5);
+				\draw (M5.source) node[left=3mm,above=3mm]{$M5$};
+				\draw (M5.gate)[right] |- (M5.drain);
+				\draw (0,4) -- (-2,4) to[C=$C_{bias}$] (-2,3) node[sground]{};
+				\draw (M5.gate) to[R, l_=$R_1$] (2,2.3) to[short,-*] (2.5,2.3) node[right]{to $G_3$};
+				\draw (M5.gate) to[R=$R_1$] (2,3.7) to[short,-*] (2.5,3.7) node[right]{to $G_4$};
+				%R2 R4
+				\draw (M5.drain) to[R=$R_2$,n=R2] (0,6.3) to[R=$R_4$] (0,7.1) to[short,-*] (0,7.5) node[above]{$V_{dd}$};
+				\draw (0,5.7) to[short] (0.7,5.7) to[R,l_=$R_3$] (2,5) to[short,-*] (2.5,5) node[right]{to $G_6$,$G_9$};
+				\draw (0,5.7) to[short] (0.7,5.7) to[R=$R_3$] (2,6.4) to[short,-*] (2.5,6.4) node[right]{to $G_7$,$G_8$};
+		\end{circuitikz}}}
+	\subfloat[][\emph{Gilbert mixer}]{\scalebox{0.75}{\begin{circuitikz}
+				\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
+				\ctikzset{bipoles/capacitor/height=0.5}
+				\ctikzset{bipoles/capacitor/width=0.1}
+				%drawing MOS
+				\draw (0,0) to[Tnmos,n=M1] (0,2)
+				(M1.source) node[right=3mm, above=3mm]{$M1$};
+				\draw (M1.gate) to[short,-*] (-1,1);
+				
+				\draw (0,2) to[R,l_=$R_S$] (-2,2)
+				to[Tnmos,n=M3] (-2,4)
+				(M3.source) node[right=3mm, above=3mm]{$M3$};
+				
+				\draw (0,2) to[R,l=$R_S$] (2,2)
+				to[Tnmos,mirror,n=M4] (2,4)
+				(M4.source) node[left=3mm, above=3mm]{$M4$};
+				
+				\draw (-2,4) -- (-3,4)
+				to[Tnmos,n=M6] (-3,5.5)
+				(M6.source) node[right=3mm, above=3mm]{$M6$};
+				
+				\draw (-2,4) -- (-1,4) to[Tnmos,mirror,n=M7] (-1,5.5)
+				(M7.source) node[left=3mm, above=3mm]{$M7$};
+				
+				\draw (2,4) -- (1,4) to[Tnmos,n=M8] (1,5.5)
+				(M8.source) node[right=3mm, above=3mm]{$M8$};
+				
+				\draw (2,4) -- (3,4) to[Tnmos,mirror,n=M9] (3,5.5)
+				(M9.source) node[left=3mm, above=3mm]{$M9$};
+				
+				%drawing VLO-
+				\draw (M7.gate) -- (M8.gate);
+				\draw (M7.gate) -| (0,4.5);
+				\draw (0,4.5) to[C=$C_{signal}$] (0,3) to[short,-*] (0,3) node[below]{$V_{LO}-$};
+				
+				%drawing RL and out connections
+				\draw (M6.drain) -- (-3,6) to[R=$R_L$,n=RL1] (-3,7) -- (-3,7.5);
+				\draw (M9.drain) --(3,6) to[R=$R_L$,n=RL2] (3,7) -- (3,7.5);
+				\draw (-1,5.5) -- (3,6);
+				\draw (1,5.5) -- (-3,6);
+				
+				%Vdd and ground
+				\draw (-3,7.5) node[above=3mm,right=3cm]{$V_{dd}$} -- (3,7.5);
+				\draw (M1.source) -- (0,0) node[sground]{};
+				
+				% VLO+-
+				\draw (M6.gate) -| (-4,4.75) to[short,-*] (-4,4.75) node[left]{to $G9$};
+				%-| (-4,4.7) to[short,-*] (-4,3) node[left]{to $G_9$};
+				\draw (M9.gate) -| (4,4.7) to[C=$C_{signal}$] (4,3) to[short,-*] (4,3) node[below]{$V_{LO}+$};
+				
+				% VRF+-
+				\draw (M3.gate) -| (-3,2) to[C, l_=$C_{signal}$] (-3,1) to[short,-*] (-3,0.5) node[left]{$V_{RF}+$};
+				\draw (M4.gate) -| (3,2) to[C, l_=$C_{signal}$] (3,1) to[short,-*] (3,0.5) node[left]{$V_{RF}-$};
+				%\draw (M4.gate) -- (3,3) to[short,-*] (3,3) node[right]{$V_{RF}-$};
+				
+				%Out nodes
+				\draw (-3, 6) to[short,*-*] (-4, 6) node[left]{$V_{out}+$};
+				\draw (3, 6) to[short,*-*] (4, 6)node[right]{$V_{out}-$};
+	\end{circuitikz}}}
+	\caption{Bias net and Gilbert Mixer schematic}
+	\label{fig:Gilb_designHand_schem}
+\end{figure}
 \paragraph{Current mirror bias}
-
+Design has been developed on the schematic visible in figure \ref{fig:Gilb_designHand_schem}.
 Both M1 and M2 must be in saturation. We choose the same current to flow in the weak and strong branches in order to have equal structures (this aids the circuit symmetry and matching, allowing us to use interdigitated structure). We impose:
 \begin{gather}
 I_{D1} = I_{D2} = I_0 = 5 mA  \\
 V_{od1}=V_{od2}=0.4 V  \\
 L_1 =3 L_{mim} = 1.8 \mu m 
 \end{gather} 
-The current magnitude is chosen thinking about the mixer used in a transmitter receiving chain, after an hypothetical power stage. The overdrive voltage's value is chose in order to keep turned on the stage even with strong fluctuation of the drain node. However, to have the same current mirrored we must have:
+The current magnitude is chosen thinking about the mixer used in a transmitter receiving chain, after an hypothetical power stage. The overdrive voltage's value is chosen in order to keep turned on the stage even with fluctuations of the drain node. However, to have the same mirrored current we must have:
 \begin{gather}
 	V_{GS1} = V_{VGS2} \notag \\
 	V_{DS1} = V_{DS2} \notag \\
-	W_1 = W_2 \notag 
+	\left(\frac{W}{L}\right)_1 = \left(\frac{W}{L}\right)_2 \notag 
 \end{gather}
 suggesting that this kind of current source can work properly only with small signal variation coming from the RF stage. Now, by using \ref{eq:Id_quadLaw}, neglecting channel modulation effects and inverting:
 \begin{equation}
@@ -64,7 +150,7 @@ V_{GS2}=V_{DS2}= V_{th0}+\sqrt{\frac{2I_0L_1}{K_n W_1 }} = 1.1 V
 The design for the voltage reference bias net is reported in section 4.
 \paragraph{Load stage and gain choice}
 As previously stated we chose A\textsubscript{vC}=4. 
-Since the whole differential structure must be symmetrical, current I\textsubscript{0} is evenly split into M3 and M4: this is the same current flowing also into the two loads. In order to give the LO stage \textbf{enough output swing} we impose one third of the supply voltage must drop on the load. Therefore, we can calculate the load resistance's value:
+Since the whole differential structure must be symmetrical, current I\textsubscript{0} is evenly split into M3 and M4: this is the same current flowing also into the two loads. In order to give the LO stage \textbf{enough output swing} we impose one third of the supply voltage must drop on the load. Therefore, we can evaluate the load resistance's value:
 \begin{equation}
 R_L = \frac{\frac{2}{3}V_{DD}}{I_0/2} = 1.33 k\Omega
 \end{equation}
@@ -74,7 +160,7 @@ The design of the RF bias begins with the choice of its transconductance, fixed 
 \begin{equation}
 	L_3 = L_4 = 3 L_{min} = 1.8 \mu m
 \end{equation} 
-The  degeneration resistance's value is chosen equal to 10$\Omega$, hence:
+The  degeneration resistance's value is chosen in order to increase stage linearity without provoking a too large voltage drop on it. Given $R_S$ equal to 10$\Omega$:
 \begin{equation}
 V_{R_S}=\frac{R_S}{I_0/2} = 25 mV
 \end{equation}
@@ -82,11 +168,11 @@ Now, by inverting equation \ref{eq:ConvGain}:
 \begin{equation}
 	g_{m3} = \frac{\pi}{2}\frac{1}{\frac{R_L}{A_{vC}}-R_S}=6.9 mS
 \end{equation}
-We notice that we have many variables that are involved and that directly affect the design feasibility:
+We noticed that there are many variables involved which directly affect design feasibility:
 \begin{itemize}
-	\item high values of R\textsubscript{S} decrease the RF stage transconductance, requiring large transistors with low overdrives. Low values give instead more transconductance and linearity reducing the output dynamic though;
-	\item increasing the conversion gain we have the same effects reported before, however mixing signals is a strongly inefficient operation, then we cannot reduce too much this quantity;
-	\item the choice of the load is important to fix the output dynamic and must be chosen carefully.
+	\item high values of R\textsubscript{S} decrease the RF stage transconductance, requiring large transistors with low overdrives, but increase linearity. Low values lead instead to higher transconductance reducing the output dynamic though;
+	\item increasing the conversion gain we have the same drawbacks of large transistors. Mixing signals is a strongly inefficient operation though, then conversion gain cannot be reduced too much;
+	\item the choice of load is important to fix the output dynamic and must be done carefully.
 \end{itemize}
 By inverting equation \ref{eq_statiGain}:
 \begin{equation}
@@ -96,7 +182,7 @@ We have body effect due to the source to body voltage, shared by M3 and M4:
 \begin{equation}
 	V_{SB3} = V_{DS1}+V_{R_S}
 \end{equation} 
-then, from equation \ref{eq_thresholdV}:
+then, from equation \ref{eq_thresholdV} we found an increased threshold voltage:
 \begin{equation}
 	V_{th3} = V_{th0}+\gamma_B\big(\sqrt{2\phi_P + V_{SB3}}-\sqrt{2\phi_P}\big) = 0.957 V 
 \end{equation}
@@ -105,9 +191,9 @@ from which it comes that:
 	V_{od3}=\sqrt{\frac{I_0}{K_n W_3/L_3}} = 0.723 V \\
 	V_{GS3} = V_{th3}+V_{od3} = 1.731 V
 \end{gather}
-Unfortunately the value of the overdrive voltage looks large \textbf{(FONTE)}, requiring us to fix V\textsubscript{DS3,4} high enough to avoid the stage to be turned off by LO's output swing. We impose to have half the supply voltage to drop on the gain stage and current mirror, having:
+Unfortunately the value of the overdrive voltage looks quite large, requiring us to fix V\textsubscript{DS3,4} high enough to avoid the stage to be turned off by LO's stage swing. We impose to have half the supply voltage to drop on the gain stage and current mirror, having (neglecting $25mV$ drop on $R_S$):
 \begin{equation}
-	V_{DS3} = \frac{1}{2}V_{DD}-V_{DS2} = 1.4 V
+	V_{DS3} = \frac{1}{2}V_{DD}-V_{DS1} = 1.4 V
 \end{equation}
 To ensure saturation of M3 and M2 we set:
 \begin{equation}
@@ -116,21 +202,21 @@ To ensure saturation of M3 and M2 we set:
 
 \paragraph{Mixing stage bias}
 
-Also in this case we require transistors from M6 to M9 to be in saturation (they are equal and biased the same way). We reduce as much as possible the overdrive voltage: in this way the stage is kept nearby the threshold fostering a the commutation of the switches. Having small overdrives we produces large transistors then, to limit this we set:
+Also in this case we require transistors from M6 to M9 to be in saturation (they are equal and biased the same way). We reduce as much as possible the overdrive voltage: in this way the stage is kept nearby the threshold fostering a fast commutation of the switches. Having small overdrives produces large transistors then, to limit this we set LO transistor length to the minimum one:
 \begin{gather}
-	L_6 = L_min  \\
+	L_6 = L_{min}  \\
 	V_{od6} = 150mV 
 \end{gather}
-By using \ref{eq:Id_quadLaw} and taking in count the body effect we get:
+By using \ref{eq:Id_quadLaw}, taking in count the body effect and the fact that in each LO transistor flows half of the bias current when turned on, we get:
 \begin{gather}
 W_6 = 1.1mm \\
-V_{SB6} = V_{DS1}+V_{R_S}+V_{DS2}\\
+V_{SB6} = V_{DS1}+V_{R_S}+V_{DS3}\\
 V_{th6} = 1.18V
 \end{gather}
-This result does not consider short channel effects, that produces a different threshold dependency on source to bulk voltage. However, considering ideal behaviour we have that the M6 to M9's bias gate voltage is:
+This result does not consider short channel effects, that produce a more complex threshold dependency on source-bulk voltage. However, considering the simplest body effect model we have that the M6 to M9's bias gate voltage is:
 \begin{gather}
 	V_{GS6}=1.326V \\
-	V_{G6} = V_{GS6}+V_{DS1}+V_{R_S}+V_{DS2} = 3.855V
+	V_{G6} = V_{GS6}+V_{DS1}+V_{R_S}+V_{DS3} = 3.855V
 \end{gather}
 
 
