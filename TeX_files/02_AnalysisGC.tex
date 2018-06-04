@@ -12,11 +12,12 @@
 		(M1.source) node[right=3mm, above=3mm]{$M1$};
 		\draw (M1.gate) to[short,-*] (-1,1);
 		
-		\draw (0,2) -- (-2,2)
+		\draw (0,2) to[R,l_=$R_S$] (-2,2)
 		to[Tnmos,n=M3] (-2,4)
 		(M3.source) node[right=3mm, above=3mm]{$M3$};
 		
-		\draw (0,2) -- (2,2) to[Tnmos,mirror,n=M4] (2,4)
+		\draw (0,2) to[R,l=$R_S$] (2,2)
+		to[Tnmos,mirror,n=M4] (2,4)
 		(M4.source) node[left=3mm, above=3mm]{$M4$};
 		
 		\draw (-2,4) -- (-3,4)
