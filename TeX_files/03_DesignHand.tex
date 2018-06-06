@@ -152,7 +152,7 @@ The design for the voltage reference bias net is reported in section 4.
 As previously stated we chose A\textsubscript{vC}=4. 
 Since the whole differential structure must be symmetrical, current I\textsubscript{0} is evenly split into M3 and M4: this is the same current flowing also into the two loads. In order to give the LO stage \textbf{enough output swing} we impose one third of the supply voltage must drop on the load. Therefore, we can evaluate the load resistance's value:
 \begin{equation}
-R_L = \frac{\frac{2}{3}V_{DD}}{I_0/2} = 1.33 k\Omega
+R_L = \frac{\frac{1}{3}V_{DD}}{I_0/2} = 667\Omega
 \end{equation}
 
 \paragraph{Gain stage bias}
@@ -166,7 +166,7 @@ V_{R_S}=\frac{R_S}{I_0/2} = 25 mV
 \end{equation}
 Now, by inverting equation \ref{eq:ConvGain}:
 \begin{equation}
-	g_{m3} = \frac{\pi}{2}\frac{1}{\frac{R_L}{A_{vC}}-R_S}=6.9 mS
+	g_{m3} = \frac{\pi}{2}\frac{1}{\frac{R_L}{A_{vC}}-R_S}=10 mS
 \end{equation}
 We noticed that there are many variables involved which directly affect design feasibility:
 \begin{itemize}
@@ -176,7 +176,7 @@ We noticed that there are many variables involved which directly affect design f
 \end{itemize}
 By inverting equation \ref{eq_statiGain}:
 \begin{equation}
-W_3 = g_{m3}^2\frac{2L_{3}}{K_nI_0} = 148.5 \mu m
+W_3 = g_{m3}^2\frac{2L_{3}}{K_nI_0} = 623.4 \mu m
 \end{equation}
 We have body effect due to the source to body voltage, shared by M3 and M4:
 \begin{equation}
@@ -188,14 +188,14 @@ then, from equation \ref{eq_thresholdV} we found an increased threshold voltage:
 \end{equation}
 from which it comes that:
 \begin{gather}
-	V_{od3}=\sqrt{\frac{I_0}{K_n W_3/L_3}} = 0.723 V \\
+	V_{od3}=\sqrt{\frac{I_0}{K_n W_3/L_3}} = 0.353 V \\
 	V_{GS3} = V_{th3}+V_{od3} = 1.731 V
 \end{gather}
 Unfortunately the value of the overdrive voltage looks quite large, requiring us to fix V\textsubscript{DS3,4} high enough to avoid the stage to be turned off by LO's stage swing. We impose to have half the supply voltage to drop on the gain stage and current mirror, having (neglecting $25mV$ drop on $R_S$):
 \begin{equation}
 	V_{DS3} = \frac{1}{2}V_{DD}-V_{DS1} = 1.4 V
 \end{equation}
-To ensure saturation of M3 and M2 we set:
+To ensure conduction of M3 and M2 we set:
 \begin{equation}
 	V_{G3}=V_{GS3} +V_{R_{S}}+V_{DS1} = 2.805 V 
 \end{equation}

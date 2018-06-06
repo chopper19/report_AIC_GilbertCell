@@ -146,7 +146,7 @@ The same holds for M2, which is always in saturation condition since it is diode
 \label{eq:Id_quadLaw}
 I_D = \mu_{n,eff} \frac{C_{ox}}{2} \frac{W}{L} (V_{GS}-V_{th})^2 = \frac{\beta_{n}}{2}V_{od}^2
 \end{equation}
-hence M1 keeps being in saturation till when:
+hence M1 stays in saturation till when:
 \begin{equation}
 V_{DS1}\geq V_{od1}= V_{th}-\sqrt{\frac{2I_0}{\beta_{n}}}
 \end{equation}
@@ -155,7 +155,7 @@ The output impedance is instead defined by:
 \begin{equation}
  r_o = \frac{1}{\lambda I_0} \propto L
 \end{equation}
-where $\lambda$ models the channel modulation effect. It appears to be that longer transistors are needed to have better current sinks.
+where $\lambda$ models the channel modulation effect. It appears that longer transistors are needed to have better current sinks.
 By looking at figure \ref{fig:CurrentMirror}, one finds (supposing both M2 and M1 in saturation, and $V_{GS1}=V_{GS2}=V_{DS1}=V_{DS2}$) that:
 \begin{gather}
 I_0 = \frac{\beta_{n1}}{2}(V_{GS1}-V_{th})^2(1+\lambda_1V_{DS1}) \notag \\
@@ -191,14 +191,14 @@ one has:
 \end{equation}
 A cascaded voltage divider is connected as load for M2: 
 \begin{itemize}
-	\item M5 is diode connected and it is used to generate the right gate bias voltage for the gain stage.
+	\item M5 is diode connected and it is used to generate the correct gate bias voltage for the gain stage.
 	\item A resistive voltage divider made up of R2 and R4 is used to bias the mixing stage.
 	\item Resistors R1 and R3 are used to connect the bias net to the gain and mixing stages' gates. They also acts as high impedance for the RF and LO signals coming from outside the circuit and prevents them to be injected into the bias net.
 	\item Capacitors C1 and C2 shunt possible non-DC disturbances coming from the Gilbert Cell, improving the bias isolation.
 \end{itemize}
 
-Noise issues will not be analysed within this treatise, even if it should be considered for a complete design. As a rule of thumb, narrow gate and low overdrive voltages should be used to lower noise contribution.(FONTE) 
-Using a resistive voltage reference can be detrimental in case of voltage supply fluctuations, since a resistive voltage divider cannot reject them. However, using active devices, we would produce much more low frequency noise injection within the net.
+Noise issues will not be analysed within this treatise, even if it should be considered for a complete design. As a rule of thumb, larger gate and low overdrive voltages should be used to lower noise contribution.(FONTE) 
+Using a resistive voltage reference can be detrimental in case of voltage supply fluctuations, since a resistive voltage divider cannot reject them. However, using active devices, we would produce much more low frequency noise injection within the net (flicker noise).
 
 \begin{figure}[H]
 	\centering
@@ -222,9 +222,9 @@ Using a resistive voltage reference can be detrimental in case of voltage supply
 
 \paragraph{Gain stage}
 
-The gain stage (shown in figure \ref{fig:GainStage}) is the linear part of the mixer. It must handle with low distortion the power coming from the input RF signal providing some amplification. The topology is suited for a low noise amplifying action(FONTE): a differential stage with source degeneration. The stage is made up of two transistors (M3 and M4) in common source configuration, biased with current by M1, and two source degeneration resistances $R_S$.
+The gain stage (shown in figure \ref{fig:GainStage}) is the linear part of the mixer. It must handle with low distortion the power coming from the input RF signal providing some amplification. The topology is a differential stage with source degeneration, well suited for linear application (thanks to the small amount of distortion). The stage is made up of two transistors (M3 and M4) in common source configuration, biased with current by M1, and two source degeneration resistances $R_S$.
 
-The RF differential signal modulates the current flowing into each of the two transistors, that have to be biased in saturation region. For both of them it must be ensured an wide output voltage range and a quite small overdrive voltage, along with a large drain-to-source bias voltage (required to maintain the stage in saturation during the switching of the LO stage).
+The RF differential signal modulates the current flowing into each of the two transistors, that have to be biased in saturation region. For both of them it must be ensured a wide output voltage range and a quite small overdrive voltage, along with a large drain-to-source bias voltage (required to maintain the stage in saturation during the switching of the LO stage).
 
 To have an idea about the gain that can be obtained with this stage, one can look at the one in figure \ref{fig:GainStage}. Removing degeneration resistances one finds that the gate-to-gate mesh gives:
 \begin{equation}
@@ -249,15 +249,14 @@ As we said before there it is the possibility to have mismatch between the trans
 \begin{equation}
 V_{o,offset}= \Delta V{th}+\frac{V_{GS}-V_{th}}{2}\Bigg(-\frac{\delta R}{2R}\frac{\Delta W /L}{2W/L}\Bigg) \notag
 \end{equation}
-To reduce this error a common centroid topology should be used in layout.
-Besides, it is important to notice that R\textsubscript{L1} and R\textsubscript{L2} are both the load of a common gate stage (mixing stage of the Gilbert cell) and that the actual gain for the RF stage is a current gain. 
+To reduce this error a common centroid topology should be used in layout. 
 
-The small signal equivalent transconductance of the stage, once we added the source degeneration, (APPENDICE?) is given by:
+The small signal equivalent transconductance of the stage, once we added the source degeneration, is given by:
 \begin{equation}
 \label{eq_degenGain}
 G_{m,eq} = \frac{g_m}{1+g_m R_S}
 \end{equation}
-By adding $R_S$ we lower the RF stage's current gain, however  we also get a more linear behaviour reducing its dependency with respect to the bias point (this fact will be demonstrated later). \textbf{LINEARITA' CON OVERDRIVE?? (RAZAVI rf PAG 193)}
+By adding $R_S$ we lower the RF stage's current gain, however  we also get a more linear behaviour reducing its dependency with respect to the bias point (this fact will be demonstrated later).
 
 The two transistors have the body contact connected to ground, this means that the threshold changes accordingly to the source to body voltage, V\textsubscript{SB}:
 \begin{equation}
@@ -267,7 +266,7 @@ V_{th} = V_{th0}+\gamma_B\big(\sqrt{2\phi_P + V_{SB}}-\sqrt{2\phi_P}\big)
 This equation holds for all the transistors in the circuit, other than in current mirror.
 
 \paragraph{Mixing stage}
-This stage is also called \emph{switching stage}, suggesting the way we want to drive transistors M6 to M9 (figure \ref{fig:MixStage}. Also this one has a differential topology, however, not in the same way of the RF stage, we drive each pair with complementary LO signals that turn on and off cycle-by-cycle one of the two devices. A sinusoidal signal is applied to the gates (similarly one can apply a square wave), large enough to ensure the abrupt switching of the stage: when a device is on it must be in saturation (not in  triode! These are actually \emph{switch-like} transistors), while the other one must be completely interdicted.
+This stage is also called \emph{switching stage}, suggesting the way we want to drive transistors M6 to M9 (figure \ref{fig:MixStage}). Also this one has a differential topology, however, not in the same way of the RF stage, we drive each pair with complementary LO signals that turn on and off cycle-by-cycle one of the two devices. A sinusoidal signal is applied to the gates (similarly one can apply a square wave), large enough to ensure the abrupt switching of the stage: when a device is on it must be in saturation (not in  triode! These are actually \emph{switch-like} transistors), while the other one must be completely interdicted.
 
 \begin{figure} [H]
 	\centering
@@ -316,7 +315,7 @@ Switching speed is related to the device cut-off frequency, that for short chann
 \begin{equation}
 f_T \propto  V_{od}/L \notag
 \end{equation}
-suggesting that the highest overdrive and the minimum channel length should be chosen. Again, a compromise must be found among the following solutions:
+suggesting that the highest overdrive and the minimum channel length should be chosen.  The maximum operating frequency must be at least ten times lower than f\textsubscript{T}. Again, a compromise must be found among the following solutions:
 \begin{itemize}
 	\item Setting the available length ( the minimum is fixed by the used design kit);
 	\item Selecting higher overdrive voltage one has the possibility to increase f\textsubscript{T}, however to keep our switches in saturation and to obtain a large output swing we need to keep small this quantity;

@@ -1,39 +1,18 @@
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.7]{waveforms}
-	\caption{Time domain waveforms: double balanced differential output with v\textsubscript{RF}=200mV,  f\textsubscript{RF}=110MHz, v\textsubscript{RF}=1.23mV, f\textsubscript{LO}=100MHz.}
-	\label{fig:TdomaniWF}
-\end{figure}
-
-
 \section{Simulation vs schematic comparison}
 
 \subsection{Simulation setup}
 Last step was to characterize the layout and evaluate its behaviour in comparison with the schematic. The carried on analysis are the following:
 \begin{itemize}
-	\item Time domain mixed signal and spectral components;
+	\item Time domain output mixed signal and spectral components;
 	\item Oscillator amplitude to maximize output component;
 	\item Conversion gain and 1dB compression point;
 	\item Single tone IIP\textsubscript{3};
 	\item Two tone IIP\textsubscript{3};
-	\item Bandwidth and CMRR of RF stage (output node filtering of output signal, current mixing);
+	\item Bandwidth of RF stage (output node filtering of output signal, current mixing);
 	\item Static power dissipation;
 \end{itemize}
 All the analysis were developed using monochromatic signals at frequencies 100MHz for LO, 110MHz for RF, and considering the mixer working in down-conversion (10MHz IF frequency).
-\begin{figure}[H]
-	\centering %se si cambia posizione a questa immagine assicurarsi che sia girata con il fondo verso il bordo esterno della pagina
-	\includegraphics[scale=0.28]{setup}
-	\caption{Simulation set-up.}
-	\label{fig:setup}
-\end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.08]{balun}
-	\caption{Balun schematic.}
-	\label{fig:balun}
-\end{figure}
 To compare schematic and layout we used the set-up proposed in figure \ref{fig:setup}, that includes:
 \begin{itemize}
 	\item The symbols related to mixer's schematic and layout under test.
@@ -41,6 +20,21 @@ To compare schematic and layout we used the set-up proposed in figure \ref{fig:s
 	\item Power supply net, implicitly connected to both layout and schematic.
 	\item Mixer's loads, represented by 50\(\Omega\) resistors connected to unitary gain driven generator. This is used both for ideal impedance matching purposes and to convert differential (balanced) output from mixers to single-ended (unbalanced).
 \end{itemize}
+
+\begin{figure}[H]
+	\centering %se si cambia posizione a questa immagine assicurarsi che sia girata con il fondo verso il bordo esterno della pagina
+	\includegraphics[scale=0.28]{setup}
+	\caption{Simulation set-up.}
+	\label{fig:setup}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{balun}
+	\caption{Balun schematic.}
+	\label{fig:balun}
+\end{figure}
 
 \subsection{Bandwidth evaluation}
 
@@ -50,9 +44,17 @@ A first, rough, idea about each transistors performances can be obtained by meas
 f_T|_{RF}=9.43GHz \notag \\
 f_T|_{LO}=1.12GHz \notag 
 \end{gather}  
-These frequency values are not directly related to the circuit's actual speed, however a limiting upper bound can be used as reference (\textbf{quale??}). 
+These frequency values are not directly related to the circuit's actual speed, however a limiting upper bound can be used as reference (maximum frequency ten time lower than f\textsubscript{T}). 
 
 Figure \ref{fig:bandwidth}b shows the conversion gain as a function of RF input signal. We set \(f_{LO}=f_{RF}-10\)MHz, in order to keep constant \(f_{IF}\). As it appears our working point presents a small decreasing from maximum gain, it is quite distant from the -3dB point though (almost 2 octaves lower).
+
+If we consider f\textsubscript{-3dB} as the maximum operative frequency we that the circuit presents surprising performance, since this point gets very close to transition frequency. 
+
+However we never considered high frequency reactive behaviour, because the model provided by the CAD tool was not intended to take into account the full set of parasitics, which play an important role at RF. The circuit physical implementation would be surely worse (mainly due to connection and package).
+
+Pretending that our simulation is accurate, this assumption of LO and RF frequency represents the worst case operative condition. 
+
+Our assumptions on LO and RF frequencies were thus considered adequate, since represent the worst-case performances of the mixer.  Maximum operating frequency could thus be improved reducing output node capacitance (for example using a folded cascode configuration for the mixing stage). 
 \begin{figure}[H] 
 	\centering
 	\subfloat[][\emph{current gain}]{\includegraphics[scale=.75]{transition_freq}} \\
@@ -69,13 +71,11 @@ Figure \ref{fig:bandwidth}b shows the conversion gain as a function of RF input 
 	\label{fig:maxGainvsLO}
 \end{figure}
 
-If we consider f\textsubscript{-3dB} as the maximum operative frequency we that the circuit presents surprising performance, since this point gets very close to transition frequency. However we never considered the reactive behaviour of the devices (because of the strong non linearity of the device), nor parasitics due to layout that surely would make these features worse.
-Our assumptions on LO and RF frequencies were thus considered adequate, since represent the worst-case performances of the mixer. Moreover it has to be noticed that the mixing operation is done on the RF current. Maximum operating frequency could thus be improved reducing output node capacitance. 
 
-\subsection{Time domain mixed signal}
-The mixed output signal with \(v_{rf}=\)200mV and \(v_{lo}=\)1.23V is visible in figure \ref{fig:TdomaniWF}. The waveform looks like the expected one from literature \textbf{(REFERENCE)}.
-Applying the discrete Fourier transform to the if signal we found the graph seen in figure \ref{fig:TdomaniDFT}a and \ref{fig:TdomaniDFT}b.
-It's clearly visible the intrinsic capability of double balanced mixer of rejecting input components at \(v_{lo}=100\)MHz and \(v_{rf}=\)110MHz.
+
+\subsection{Maximum conversion gain vs LO}
+Input LO signal was swept to find the optimum value that maximizes output voltage at IF. The analysis has been carried on for both schematic and layout circuit. Voltage \(v_{rf}=200mV\) was kept constant during the analysis, and output amplitude at 10MHz was divided by LO amplitude such that the peak corresponds to the maximum LO amplitude for which IF output power saturates. Results are shown in figure \ref{fig:maxGainvsLO}. It can be noticed that schematic and layout reach their maximum for different values of LO signal, \(2.5V\) and \(1.23V\) respectively. 
+In general it can be noticed that layout has an higher gain than the schematic. Trying to change \(v_{rf}\) amplitude very tiny changes in peak output voltage where found, so the first analysis was kept as a quite good estimation for optimum LO peak voltage. From now on all the comparison between the two circuits have been made imposing the optimum LO voltage for each circuit.
 
 \begin{figure}[H] 
 	\centering
@@ -85,10 +85,17 @@ It's clearly visible the intrinsic capability of double balanced mixer of reject
 	\label{fig:TdomaniDFT}
 \end{figure}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{waveforms}
+	\caption{Time domain waveforms: double balanced differential output with v\textsubscript{RF}=200mV,  f\textsubscript{RF}=110MHz, v\textsubscript{RF}=1.23mV, f\textsubscript{LO}=100MHz.}
+	\label{fig:TdomaniWF}
+\end{figure}
 
-\subsection{Maximum conversion gain vs LO}
-Input LO signal was swept to find the optimum value that maximizes output voltage at IF. The analysis has been carried on for both schematic and layout circuit. Voltage \(v_{rf}=200mV\) was kept constant during the analysis, and output amplitude at 10MHz was divided by LO amplitude such that the peak corresponds to the maximum LO amplitude for which IF output power saturates. Results are shown in figure \ref{fig:maxGainvsLO}. It can be noticed that schematic and layout reach their maximum for different values of LO signal, \(2.5V\) and \(1.23V\) respectively. 
-In general it can be noticed that layout has an higher gain than the schematic. Trying to change \(v_{rf}\) amplitude very tiny changes in peak output voltage where found, so the first analysis was kept as a quite good estimation for optimum LO peak voltage. From now on all the comparison between the two circuits have been made imposing the optimum LO voltage for each circuit.
+\subsection{Time domain mixed signal}
+The mixed output signal with \(v_{rf}=\)200mV and \(v_{lo}=\)1.23V is visible in figure \ref{fig:TdomaniWF}. The waveform looks like the expected one from literature.
+Applying the discrete Fourier transform to the if signal we found the graph seen in figure \ref{fig:TdomaniDFT}a and \ref{fig:TdomaniDFT}b.
+It's clearly visible the intrinsic capability of double balanced mixer of rejecting input components at \(v_{lo}=100\)MHz and \(v_{rf}=\)110MHz.
 
 \subsection{Conversion gain and 1dB compression point}
 Keeping optimum LO amplitude, RF's voltage was swept in order to see how output power at IF frequency increases with input power at RF. Reference port for all power measurement has been chosen to be \(50\ohm\). \(P_{IF}\) as a function of \(P_{RF}\) conversion gain is shown in figure \ref{fig:PinPout1T_1dBCp} for both schematic and layout, whereas gain can be seen in figure \ref{fig:GainvsRF}. 
@@ -99,13 +106,13 @@ A_{vC}|_{schematic}=2.675 \notag
 \end{gather}
 Extrapolation of 1dB compression point was carried on, leading to the measurement of RF power for which the gain drops of 1dB equal to 
 \begin{gather}
-P_{RF,in}|_{layout}=5.24dB_{m} \notag \\
-P_{RF,in}|_{schematic}=3.51dB_{m} \notag
+P_{RF,in}|_{layout}=-2.32dB_{m} \notag \\
+P_{RF,in}|_{schematic}=-4.82dB_{m} \notag
 \end{gather}
 then, respectively for schematic and layout, corresponding to the voltages:
 \begin{gather}
-V_{RF,in}|_{layout}=122.3mV \notag \\
-V_{RF,in}|_{schematic}=149.2mV \notag
+V_{RF,in}|_{layout}=172mV \notag \\
+V_{RF,in}|_{schematic}=129mV \notag
 \end{gather}
 
 

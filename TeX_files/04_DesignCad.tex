@@ -3,12 +3,12 @@
 \subsection{Gilbert Cell design}
 After simulating the design made with Level 1 model, simulation results proven to be not enough accurate to have a correctly behaving circuit.
 For this reason a new design was carried on taking advantage of the simulated trans-characteristic of each stage.\\
-In literature \textbf{(FONTE)} an optimum value for RF transistors width in mixers is proposed:\footnote{More generally, this gives a compromise between power dissipation and noise in LNA.}
+In literature an optimum value for RF transistors width in mixers is proposed:\footnote{More generally, this gives a compromise between power dissipation and noise in LNA.}
 \begin{equation}
 W_{opt}=\frac{1}{3\omega L C_{ox} R_{g}}
 \end{equation}
 where $\omega$ is the stage's working frequency (i.e. f\textsubscript{LO} or f\textsubscript{RF}), L is the channel length, C\textsubscript{ox} is the MOSFETS's total oxide capacitance and R\textsubscript{g} the generator output resistance (we set this value equal to 50$\Omega$). Values coming from this formula are actually too large ($\ge1$mm), therefore we chose to pursue another approach to begin the design.
-The reference schematic is the one in figure \ref{GilbertCell1}.
+The reference schematic is the one in figure \ref{fig:GilbertCell1}.
 \begin{figure}[H]
 	\centering
 	\begin{circuitikz}
@@ -20,11 +20,12 @@ The reference schematic is the one in figure \ref{GilbertCell1}.
 		(M1.source) node[right=3mm, above=3mm]{$M1$};
 		\draw (M1.gate) to[short,-*] (-1,1);
 		
-		\draw (0,2) -- (-2,2)
+		\draw (0,2) to[R,l_=$R_S$] (-2,2)
 		to[Tnmos,n=M3] (-2,4)
 		(M3.source) node[right=3mm, above=3mm]{$M3$};
 		
-		\draw (0,2) -- (2,2) to[Tnmos,mirror,n=M4] (2,4)
+		\draw (0,2) to[R,l=$R_S$] (2,2)
+		to[Tnmos,mirror,n=M4] (2,4)
 		(M4.source) node[left=3mm, above=3mm]{$M4$};
 		
 		\draw (-2,4) -- (-3,4)
@@ -84,7 +85,7 @@ Further, suppositions on bias voltages were made. For example, a voltage equal t
 	V_{SB3} &= V_{DS1} = V_{DS3} = 1.5 V \nonumber 
 \end{align}
 This way allows us to take into account the body effect on threshold voltage of transistor M3.
-Then we plotted the current and transconductance of the transistor as a function of \(V_{GS}\) and\(V_{DS}\), that are shown in pictures \ref{fig:W_2_id_gm}a and \ref{fig:W_2_id_gm}b.
+Then we plotted the current and transconductance of the transistor as a function of \(V_{GS}\) and \(V_{DS}\), that are shown in pictures \ref{fig:W_2_id_gm}a and \ref{fig:W_2_id_gm}b.
 \begin{figure}[H] 
 	\centering
 	\subfloat[][\emph{}]{\includegraphics[scale=.6]{W2_id}} \quad
@@ -105,13 +106,13 @@ The largest width  \(W_3=500\mu m\) (the green curve) was chosen, along with \(V
 \end{figure}
 We moved then to current sink design, M1 and M2. Given the data:
 \begin{align}
-	V_{R_S} &= 2.9mA*10\ohm=29mV \notag \\
+	V_{R_S} &= 2.9mA\cdot 10\ohm=29mV \notag \\
 	V_{DS1}&=1.5V-V_{R_S}=1.471V \notag \\
 	V_{GS1}&=1.471V \notag
 \end{align}
 This set of values leads to a width equal to \(W_1=373\mu m\) in order to have \(I_0=2\cdot2.9mA=5.8mA\) (figure \ref{W1_id}).
 
-Finally the LO stage was designed, along with the load resistance \(R_L\) starting from the wanted conversion gain, lowered to  \(A_v=4\) with respect to what we decided in the previous section. Given the analytic expression of voltage conversion gain \ref{eq:ConvGain} \textbf{(FONTE)}:
+Finally the LO stage was designed, along with the load resistance \(R_L\) starting from the wanted conversion gain, lowered to  \(A_v=4\) with respect to what we decided in the previous section. Given the analytic expression of voltage conversion gain (Figure \ref{eq:ConvGain}):
 \begin{align}
 	A_v \approx \frac{2}{\pi}\left( \frac{R_L}{R_S + \frac{1}{g_{m3}}}\right)=4 \nonumber
 \end{align}
@@ -136,20 +137,18 @@ and
 	V_{DS6}=V_{dd}-V_{R_L}-V_{SB6}=327mV \nonumber
 \end{gather}
 The LO gate bias voltages must be slightly above the threshold, in order to let the transistors turn on and off with small LO signal variations, deviating rapidly current coming from the RF stage. To accomplish this, the transistor's threshold was extracted from simulation, using the \(g_{m}\) graph as a function of \(V_{GS}\) (figure \ref{M6_Vth}). 
-Having \(V_{th6}=1.27V\), a very small overdrive of \( \Delta V_6=60mV \) was chosen, for the reason reported before, and to assure the stage is not working in triode region. This leads to:
+Having \(V_{th6}=1.27V\), a very small overdrive of \( V_{od6}=60mV \) was chosen, for the reason reported before, and to assure the stage is not working in triode region. This leads to:
 \begin{align}
-	V_{GS6}=V_{th6}+\Delta V_6=1.33V \nonumber
+	V_{GS6}=V_{th6}+V_{od6}=1.33V \nonumber
 \end{align}
-Once fixed the node's voltages and the current flowing in the transistor (\(2.9mA\), due to the fact that only two transistors of LO stage conduct simultaneously), transistor width \(W_6\) was swept to fulfil precisely this biasing. The followed procedure is the same displayed in figure \ref{W_2_id_gm} and the resulting found dimensions are:
+Once fixed the gates' voltages and the current flowing in the transistor (\(2.9mA\), due to the fact that only two transistors of LO stage conduct simultaneously), transistor width \(W_6\) was swept to fulfil precisely this biasing. The followed procedure is the same displayed in figure \ref{fig:W_2_id_gm} and the resulting dimensions are:
 \begin{align}
 	&W_6=170.3\mu m \nonumber\\
 	&L = L_{min} = 0.6\mu m \nonumber
 \end{align}                                                                      
 Only for this stage the minimum channel length was taken, in order to keep small these transistors regardless overdrive small value.
 
-                                                                                 
-\subsection{Biasing network design}                                              
-From the previous section, the bias network specifications required by current sink, RF and LO stage are suddenly imposed:
+                                                                                \subsection{Biasing network design}                                          From the previous section, the bias network specifications required by current sink, RF and LO stage are suddenly imposed:
 \begin{align}                                                                    
 	V_{G1}&=1.471 V \nonumber \\                                                    
 	V_{G3}&=3 V \nonumber \\                                                        
@@ -168,12 +167,12 @@ The bias network circuit employed is visible in figure \ref{fig:biasNet1}.
 		\draw (M2.gate)[right] |- (M2.drain);
 		\draw (M2.gate) to[short,-*] (2.5,1) node[right]{to $G_1$};
 		\draw (M2.source) to[short] (0,0) node[sground]{};
-		\draw (0,2) -- (-2,2) to[C=$C_{bias}$] (-2,1) node[sground]{};
+		\draw (0,2) -- (-2,2) to[C=$C_{2}$] (-2,1) node[sground]{};
 		%M5
 		\draw (M2.drain) to[Tnmos,mirror,n=M5] (0,4.5);
 		\draw (M5.source) node[left=3mm,above=3mm]{$M5$};
 		\draw (M5.gate)[right] |- (M5.drain);
-		\draw (0,4) -- (-2,4) to[C=$C_{bias}$] (-2,3) node[sground]{};
+		\draw (0,4) -- (-2,4) to[C=$C_{1}$] (-2,3) node[sground]{};
 		\draw (M5.gate) to[R, l_=$R_1$] (2,2.3) to[short,-*] (2.5,2.3) node[right]{to $G_3$};
 		\draw (M5.gate) to[R=$R_1$] (2,3.7) to[short,-*] (2.5,3.7) node[right]{to $G_4$};
 		%R2 R4
@@ -199,7 +198,7 @@ The sum of \(R_2\) and \(R_4\) must be such that with total current of \(5.8mA\)
 \begin{align}
 	R_2+R_4=\frac{V_{dd}-V_{G5}}{I_0} = 344\ohm \nonumber
 \end{align}
-The partition between them must give a bias voltage to LO stage of \(4.33V\). This brings to
+The partition between them must give a bias voltage to LO stage of V\textsubscript{G6}=4.33V. This brings to
 \begin{align}
 	R_2=229\ohm\nonumber\\
 	R_4=115\ohm\nonumber
@@ -211,7 +210,8 @@ Resistors \(R_1\) and \(R_3\) were chosen to be large enough to isolate biasing 
 \end{align}
 From here, the minimum capacitance to filter out LO signal can be evaluated in order to have a pole at least one decade before working frequency. The output resistance of M5 has been considered negligible with respect to R\textsubscript{1} and R\textsubscript{3}, leading to an equivalent resistance for the low pass filter equal to:
 \begin{align}
-	R_{eq}=R_1//R_3//R_2//R4=76.4 \ohm \nonumber
+	R_{eq}=R_1//R_3//R_2//R4=76.4 \ohm \nonumber \\
+	R_{eq} \simeq R_1||(R_2+R4||R_3)??
 \end{align}
 from which the resulting capacitance:
 \begin{align}
@@ -248,4 +248,4 @@ As it can be seen from the close-up figure \ref{S_cad_I0} bias voltages and curr
 	\caption{}
 \end{figure}
 
-Dynamical analyses on the circuit in figure \ref{S_cad_full} has already been made at this point to verify the correct mixing behaviour. For the sake of a simpler exposition, however, all dynamical analyses have been moved in this treatise to the final chapter. In the next section circuit layout is described. 
+Dynamical analyses for the circuit in figure \ref{S_cad_full} have been moved in this treatise to the final chapter. In the next section circuit layout is described. 
