@@ -1,3 +1,6 @@
+\newpage
+\thispagestyle{empty}
+\clearpage\mbox{}\clearpage
 \section{Design by hand of a down-converting Gilbert cell}
 
 \subsection{Design specifications}
@@ -46,7 +49,7 @@ It is necessary to notice that the following calculation is carried on consideri
 				\draw (M2.gate)[right] |- (M2.drain);
 				\draw (M2.gate) to[short,-*] (2.5,1) node[right]{to $G_1$};
 				\draw (M2.source) to[short] (0,0) node[sground]{};
-				\draw (0,2) -- (-2,2) to[C=$C_{bias}$] (-2,1) node[sground]{};
+				\draw (0,6) -- (-2,6) to[C=$C_{bias}$] (-2,5) node[sground]{};
 				%M5
 				\draw (M2.drain) to[Tnmos,mirror,n=M5] (0,4.5);
 				\draw (M5.source) node[left=3mm,above=3mm]{$M5$};
@@ -58,7 +61,7 @@ It is necessary to notice that the following calculation is carried on consideri
 				\draw (M5.drain) to[R=$R_2$,n=R2] (0,6.3) to[R=$R_4$] (0,7.1) to[short,-*] (0,7.5) node[above]{$V_{dd}$};
 				\draw (0,5.7) to[short] (0.7,5.7) to[R,l_=$R_3$] (2,5) to[short,-*] (2.5,5) node[right]{to $G_6$,$G_9$};
 				\draw (0,5.7) to[short] (0.7,5.7) to[R=$R_3$] (2,6.4) to[short,-*] (2.5,6.4) node[right]{to $G_7$,$G_8$};
-		\end{circuitikz}}}
+	\end{circuitikz}}}
 	\subfloat[][\emph{Gilbert mixer}]{\scalebox{0.75}{\begin{circuitikz}
 				\ctikzset{tripoles/mos style/arrows,bipoles/length=1cm}
 				\ctikzset{bipoles/capacitor/height=0.5}
