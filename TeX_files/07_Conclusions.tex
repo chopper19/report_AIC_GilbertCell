@@ -1,5 +1,18 @@
 \section{Conclusions}
 
-All the project has been developed keeping in mind his didactic purpose. It was beautiful mean for experimenting integrated analog design along with the use of professional cad tools. We learned the importance of complex simulated device models in order to have functioning circuits in sub-micrometer technologies. It has been an opportunity to prove layout strategies dealing with MOSIS' integrated design rules.
-Given that, this work brings within it different limitations, mainly due to the fact that our process of learning has come along with the developing of the process itself. We had to learn by numerous trial and errors to design a circuit of which we knew just the theoretical working principle, gathering pieces from different articles and textbooks. Our inexperience led us to get involved from the beginning into an RF design with an elder technology, not intended for this purpose. Nor the simulation models provided by AMI06 are enough accurate to take count of many parasitics which can not be neglected in high frequency switched circuits. Thus we can say, with a certain amount of confidence, that all results and circuit performances shown here, would be by far worse if implemented on a physical device.
-Nonetheless, since the problems encountered and measurements done in this work would have been the same on a better-technology/better-functioning circuit, our choice was yet to carry this project till the end.
+The aim of this treatise was to show how to design a Gilbert cell based analog multiplier. A complete description of the GC working principle and a possible design procedure has been developed. Analysing the results obtained during the process, it is possible to notice that:
+\begin{itemize}
+	\item The circuit correctly performs the mixing of an input signal within bandwidth;
+	\item A reasonable conversion gain has been obtained (A\textsubscript{v,layout} $\simeq$ 2.9, A\textsubscript{v,schem} $\simeq$ 2.7), having a good matching between simulations and hand calculations;
+	\item The amount of distortion introduced by the net is acceptable if the input power remains well below the 1dB compression point, limiting the circuit input range to a few hundreds of millivolts though;
+\end{itemize}
+However, despite these encouraging outcomes we need to point out that:
+\begin{itemize}
+	\item The AMI's 0.6 process design kit by MOSIS is old-fashioned and not meant to be used for RF applications. Hence, the multiplier could not work correctly at the chosen frequency with the expected performances;
+	\item The extractor used to generate the layout (Cadence Diva) was not able to provide the full set of parasitic elements that would appear within the circuit due to connections between components (routing, packaging) and originated by the devices themselves, leading to inaccurate analysis;
+	\item A quite wide circuit area would be necessary in order to fulfil the specifications (gain, power consumption), determining the presence of large amount of parasitic elements that would worsen the circuit's performances in a real layout.  
+\end{itemize}
+To sum up, the circuit functions properly, although it probably overestimates what would be the real behaviour. Thus we can say, with a certain amount of confidence, that all results and circuit performances shown here, would be by far worse if implemented on a physical device.  Therefore, the design has to be intended with didactic purposes.
+\\
+\\
+It was a great way for experimenting integrated analog design along with the use of professional cad tools. We learnt the importance of complex simulated device models in order to have functioning circuits in sub-micrometer technologies. It has been an opportunity to prove layout strategies dealing with MOSIS' integrated design rules.
